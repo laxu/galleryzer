@@ -1,0 +1,26 @@
+{
+    "name": "Only images",
+    "version": "0.9",
+    "manifest_version": 2,
+    "description": "Creates a gallery view of images on page.",
+    "permissions": ["tabs", "storage", "http://*/*", "https://*/*"],
+    "browser_action": {
+        "default_icon": "images/icon.png",
+        "default_title": "Only images"
+    },
+    "options_ui": {
+        "page": "options.html",
+        "chrome_style": true
+    },
+    "background": {
+        "scripts": [ "background.js" ]
+    },
+    "content_scripts": [ 
+        {
+            "js": [ "gallery.js" ],
+            "css": [ "gallery.css" ],
+            "matches": ["http://*/*", "https://*/*"]
+        }
+    ],
+    "web_accessible_resources": [ "gallery.css"]
+}

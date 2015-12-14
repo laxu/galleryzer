@@ -1,0 +1,35 @@
+<html>
+	<head>
+		<title>Only Images options</title>
+		<style type="text/css">
+			#status {
+				display: inline-block;
+				vertical-align: middle;
+				margin-left: .5rem;
+				margin-top: -0.2rem;
+			}
+
+			label {
+				display: inline-block;
+				margin-right: .5rem;
+			}
+
+			#min_width {
+				max-width: 60px;
+			}
+		</style>
+	</head>
+	<body>
+		<label>Minimum image size to show in gallery:</label>
+		<input type="number" id="min_width" placeholder="200" required> pixels
+		<br>
+		<label>Background:</label>
+		<select id="background">
+			<option value="light">Light</option>
+			<option value="dark">Dark</option>
+		</select>
+		<br><br>
+		<button id="save_button">Save settings</button><div id="status"></div>
+		<script type="text/javascript" src="options.js"></script>
+	</body>
+</html>
