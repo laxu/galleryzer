@@ -32,6 +32,18 @@
   border: 1px solid #ccc; 
 }
 
+  .only_images_notification {
+    position: absolute;
+    top: 5%;
+    left: 50%;
+    transform: translate(-50%, 0);
+    padding: 1rem 2rem;
+    background: #0dc5c1;
+    color: white;
+    font-family: Helvetica, Arial;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, .75);
+  }
+
   #gallery_background {
     display:none;
     z-index: 99998;

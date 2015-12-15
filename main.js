@@ -1,14 +1,15 @@
-
 //Run when clicking toolbar icon
-buildGallery(); //Create gallery of suitable images
+buildGallery(); //Create gallery
 
-if(document.images.length)
-{
+if(document.images.length) {
 	if(galleryOpen) {
 		hideGallery();
 	}
 	else {
-        getImages();
-		showGallery();	
+        if(getImages()) {
+            showGallery();    
+        } else {
+            notify('No suitable images found.');
+        }
 	}	
-}	
+}

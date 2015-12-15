@@ -102,6 +102,18 @@ function hideGallery()
     galleryOpen = false;
 }
 
+function notify(message) {
+    var el = document.createElement('div');
+    el.className = prefix + 'notification';
+    el.innerHTML = message;
+    document.body.appendChild(el);
+
+    setTimeout(function() {
+        hideEl(el);
+        document.body.removeChild(el);
+    }, 2000);
+}
+
 /**
  * Check if image is suitable for showing in gallery
  * @param  {DOMElement} img Source image element
@@ -181,6 +193,8 @@ function getImages()
         
         content.appendChild(fragment);
     }
+
+    return images.length ? true : false;
 }
 
 /**
