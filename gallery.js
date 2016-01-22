@@ -16,10 +16,10 @@ function getSettings() {
 getSettings();
 
 var prefix = 'only_images_',    //Prefix to avoid clashing classes etc
-    galleryImageClass = 'gallery_image',
+    galleryImageClass = prefix + 'gallery_image',
 
     //Elements will be referenced with these
-    frame, container, content, bg,
+    frame, container, content, bg, closeButton,
     preview, previewImg, previewSpinner, 
 
     imgURL, altImgURL,  //Current image preview URLs
@@ -120,7 +120,7 @@ function notify(message) {
  */
 function parseImage(img) {
     var parent = img.parentNode;
-    if(parent.className !== galleryImageClass && parent.id !== 'gallery_preview')
+    if(parent.className !== galleryImageClass && parent.id !== prefix + 'gallery_preview')
     {        
         if(img.width >= settings.minWidth && img.height >= desiredHeight)
         {
@@ -222,6 +222,11 @@ function bindEventListeners() {
         hideGallery();
     }, false);
 
+    //Close gallery when you click the close button
+    closeButton.addEventListener('click', function(event) {
+        hideGallery();
+    }, false);    
+
     container.addEventListener('click', function(event) {
         event.stopPropagation();
     });
@@ -310,8 +315,10 @@ function buildFrame() {
     var el = document.createElement('div');
     el.setAttribute('id', frameID);
     el.className = settings.background;
-    el.innerHTML = '<div id="gallery_background"></div>' +
-    '<div id="gallery_preview"><div class="loader"></div><img id="preview_image"></div><div id="gallery_container"><div id="gallery_wrapper"><div id="gallery_content"></div></div></div>';
+    el.innerHTML = '<div id="' + prefix + 'gallery_background"></div>' +
+    '<div id="' + prefix + 'gallery_preview"><div class="' + prefix + 'loader"></div><img id="' + prefix + 'preview_image"></div>' +
+    '<div id="' + prefix + 'gallery_container"><div id="' + prefix + 'gallery_wrapper"><div id="' + prefix + 'close_button">X</div>' + 
+    '<div id="' + prefix + 'gallery_content"></div></div></div>';
     return el;
 }
 
@@ -327,12 +334,13 @@ function buildGallery() {
 
     document.body.appendChild(frame);
 
-    container = frame.querySelector('#gallery_container');
-    content = container.querySelector('#gallery_content');
-    preview = frame.querySelector('#gallery_preview');
-    previewImg = preview.querySelector('#preview_image');
-    previewSpinner = preview.querySelector('.loader');
-    bg = frame.querySelector('#gallery_background');
+    container = frame.querySelector('#' + prefix + 'gallery_container');
+    content = container.querySelector('#' + prefix + 'gallery_content');
+    preview = frame.querySelector('#' + prefix + 'gallery_preview');
+    previewImg = preview.querySelector('#' + prefix + 'preview_image');
+    previewSpinner = preview.querySelector('.' + prefix + 'loader');
+    bg = frame.querySelector('#' + prefix + 'gallery_background');
+    closeButton = container.querySelector('#' + prefix + 'close_button');
 
     bindEventListeners();
 
