@@ -15,8 +15,10 @@ function getSettings() {
 
 getSettings();
 
-var prefix = 'only_images_',    //Prefix to avoid clashing classes etc
+var prefix = 'only_images_',      //Prefix to avoid clashing classes etc
     galleryImageClass = prefix + 'gallery_image',
+
+    frameID = prefix + 'gallery_frame',
 
     //Elements will be referenced with these
     frame, container, content, bg, closeButton,
@@ -29,15 +31,17 @@ var prefix = 'only_images_',    //Prefix to avoid clashing classes etc
     images = [],        //Images suitable for gallery
     imageSrcList = [],  //List of image sources to prevent duplicates
 
-    frameID = prefix + 'gallery_frame',
+    KEY_ESC         = 27,
+    KEY_RIGHT_ARROW = 39,
+    KEY_LEFT_ARROW  = 37,
 
     previewOpen = false, 
     galleryOpen = false,
 
     previewPadding = 20,    //Image preview container padding
-    imgScaleRatio = 2.5,    //Image scaling ratio
+    imgScaleRatio  = 2.5,    //Image scaling ratio
     imgHeightRatio = 1.5,   //Value to determine if image is tall enough (to skip header images, banners etc)
-    desiredHeight = settings.minWidth / imgHeightRatio;
+    desiredHeight  = settings.minWidth / imgHeightRatio;
 
 /**
  * Calculate window size
@@ -136,9 +140,10 @@ function parseImage(img) {
 /**
  * Create a gallery image element
  * @param  {DOMElement} img Image source element
+ * @param  {number}     idx Image index
  * @return {DOMElement}     Gallery image element
  */
-function createImageElement(img) {
+function createImageElement(img, idx) {
     var el = document.createElement('div');
     el.className = galleryImageClass;
     //el.style.maxWidth = Math.round(windowSize.width / imgScaleRatio) + 'px';
@@ -148,6 +153,8 @@ function createImageElement(img) {
     if(bigVersion) {
         el.setAttribute('data-bigImage', bigVersion);
     }
+
+    el.setAttribute('data-idx', idx);
 
     var imgEl = document.createElement('img');
     
@@ -187,8 +194,8 @@ function getImages()
         //Found suitable images
         var fragment = document.createDocumentFragment();
 
-        images.forEach(function(img) {
-            fragment.appendChild(createImageElement(img));
+        images.forEach(function(img, idx) {
+            fragment.appendChild(createImageElement(img, idx));
         });
         
         content.appendChild(fragment);
@@ -198,13 +205,33 @@ function getImages()
 }
 
 /**
+ * Change preview image
+ * @param  {number} direction -1 for back, 1 for forward
+ * @param  {number} currentIdx Index of current image
+ */
+function changePreviewImage(direction, currentIdx) {
+    var newIndex = parseInt(currentIdx, 10) + direction;
+    if(newIndex < 0) {
+        newIndex = images.length - 1;
+    } else if(newIndex >= images.length) {
+        newIndex = 0;
+    }
+
+    var el = content.querySelector('[data-idx="' + newIndex + '"]');
+    if(el) {
+        hidePreview();
+        el.dispatchEvent(new Event('click', { bubbles: true }));
+    }
+}
+
+/**
  * Bind event listeners for gallery functions
  */
 function bindEventListeners() {
     //Close gallery or preview when esc is clicked
     document.addEventListener('keyup', function(event)
     {
-        if (event.which === 27) {
+        if (event.keyCode === KEY_ESC) {
             if(previewOpen) {
                 hidePreview();
                 return false;
@@ -214,6 +241,10 @@ function bindEventListeners() {
                 hideGallery();
                 return false;
             }
+        } else if(previewOpen && event.keyCode === KEY_RIGHT_ARROW) {
+            changePreviewImage(1, previewImg.getAttribute('data-idx'));
+        } else if(previewOpen && event.keyCode === KEY_LEFT_ARROW) {
+            changePreviewImage(-1, previewImg.getAttribute('data-idx'));
         }
     }, false);
     
@@ -287,6 +318,7 @@ function bindEventListeners() {
         if(!previewOpen)
         {
             imgURL = target.getAttribute('data-bigImage');
+            imgIdx = target.getAttribute('data-idx');
             altImgURL = target.querySelector('img').getAttribute('src');
 
             if(!imgURL) { 
@@ -300,6 +332,7 @@ function bindEventListeners() {
                 hideEl(previewImg);
                 showEl(previewSpinner);
                 previewImg.setAttribute('src', imgURL);
+                previewImg.setAttribute('data-idx', imgIdx);
             }
                         
             showPreview();
@@ -343,5 +376,4 @@ function buildGallery() {
     closeButton = container.querySelector('#' + prefix + 'close_button');
 
     bindEventListeners();
-
 }
