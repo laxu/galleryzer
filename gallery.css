@@ -107,6 +107,7 @@
       #only_images_gallery_preview img {
         display:block;
         max-width: calc(100vw - 40px);
+        max-height: calc(100vh - 40px);
       }
 
         #only_images_gallery_preview #only_images_preview_spinner {
