@@ -174,7 +174,7 @@
     text-indent: -9999em;
     width: 11em;
     height: 11em;
-    border-radius: 50%;
+    border-radius: 50% !important;
     background: #0dc5c1;
     background: -moz-linear-gradient(left, #0dc5c1 10%, rgba(255, 255, 255, 0) 42%);
     background: -webkit-linear-gradient(left, #0dc5c1 10%, rgba(255, 255, 255, 0) 42%);
@@ -193,7 +193,7 @@
     width: 50%;
     height: 50%;
     background: #0dc5c1;
-    border-radius: 100% 0 0 0;
+    border-radius: 100% 0 0 0 !important;
     position: absolute;
     top: 0;
     left: 0;
@@ -204,7 +204,7 @@
     background: #333;
     width: 75%;
     height: 75%;
-    border-radius: 50%;
+    border-radius: 50% !important;
     content: '';
     margin: auto;
     position: absolute;
