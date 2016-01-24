@@ -39,6 +39,7 @@ var prefix = 'only_images_',      //Prefix to avoid clashing classes etc
 
     previewOpen = false, 
     galleryOpen = false,
+    contentChanged = false,
 
     previewPadding = 20,    //Image preview container padding
     imgScaleRatio  = 2.5,    //Image scaling ratio
@@ -185,7 +186,7 @@ function createImageElement(img, idx) {
  */
 function getImages() 
 {
-    var contentChanged = false; 
+    contentChanged = false;
     if(!images.length || allImages.length !== document.images.length)
     {
         allImages = document.images;
@@ -194,6 +195,13 @@ function getImages()
         contentChanged = true;
     }
 
+    return images.length ? true : false;
+}
+
+/**
+ * Create gallery images
+ */
+function createImages() {
     if(images.length && contentChanged)
     {
         //Found suitable images
@@ -205,8 +213,6 @@ function getImages()
         
         content.appendChild(fragment);
     }
-
-    return images.length ? true : false;
 }
 
 /**

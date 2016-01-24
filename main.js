@@ -1,5 +1,4 @@
 //Run when clicking toolbar icon
-buildGallery(); //Create gallery
 
 if(document.images.length) {
 	if(galleryOpen) {
@@ -7,6 +6,8 @@ if(document.images.length) {
 	}
 	else {
         if(getImages()) {
+            buildGallery();
+            createImages();
             showGallery();    
         } else {
             notify('No suitable images found.');
