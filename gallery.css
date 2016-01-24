@@ -96,8 +96,8 @@
     #only_images_gallery_container {
       position: relative;
       box-sizing: border-box;
-      width: 95%;
-      height: 95%;
+      width: calc(100% - 40px);
+      height: calc(100% - 40px);
       margin: 20px;
       padding: 10px;
       background: #333;
