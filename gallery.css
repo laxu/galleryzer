@@ -32,7 +32,7 @@
 
   .only_images_notification {
     position: absolute;
-    top: 5%;
+    top: 2rem;
     left: 50%;
     transform: translate(-50%, 0);
     z-index: 999999;
