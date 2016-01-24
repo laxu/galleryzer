@@ -25,6 +25,8 @@ var prefix = 'only_images_',      //Prefix to avoid clashing classes etc
     preview, previewImg, previewSpinner, 
 
     imgURL, altImgURL,  //Current image preview URLs
+
+    prevBodyPosition,   //Used for saving previous body position state
     prevBodyOverflow,   //Used for saving previous body overflow state
     
     allImages = [],     //All images in page
@@ -93,7 +95,9 @@ function hidePreview()
 function showGallery()
 {
     showEl(frame);
+    prevBodyPosition = document.body.style.position;
     prevBodyOverflow = document.body.style.overflow;
+    document.body.style.position = 'fixed';
     document.body.style.overflow = 'hidden';    //Prevent scrolling page
     galleryOpen = true;
 }
@@ -102,6 +106,7 @@ function hideGallery()
 {
     hidePreview();
     hideEl(frame);
+    document.body.style.position = prevBodyPosition;
     document.body.style.overflow = prevBodyOverflow;
     galleryOpen = false;
 }
