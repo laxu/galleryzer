@@ -82,6 +82,7 @@
 
       #only_images_gallery_preview img {
         display:block;
+        background-color: #111;
         max-width: calc(100vw - 40px);
         max-height: calc(100vh - 40px);
       }
@@ -164,6 +165,7 @@
         
             .only_images_gallery_image img {
               display:block;
+              background-color: #111;
               max-width: 100%;
               margin: 0;
               padding: 0;
@@ -266,5 +268,10 @@
 }
 
 #only_images_gallery_frame.light .only_images_gallery_image img {
+  background-color: #999;
   border: 1px solid #ccc; 
+}
+
+#only_images_gallery_frame.light #only_images_gallery_preview img {
+  background-color: #999;
 }
