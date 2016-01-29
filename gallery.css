@@ -18,8 +18,9 @@
   top: -15px;
   right: -16px;
   padding: .5rem .625rem .4rem;
-  border-radius: 100% !important;
-  background: linear-gradient(to bottom, #888 0%,#555 100%);
+  border-radius: 4px !important;
+  background: linear-gradient(to bottom, #777 0%,#555 100%);
+  box-shadow: -2px 2px 4px rgba(0, 0, 0, 0.5);
   color: #ddd;
   font: normal 12pt/1 Helvetica, Arial !important;
 }
@@ -27,7 +28,7 @@
   #only_images_close_button:hover {
     cursor: pointer;
     color: #eee;
-    background: linear-gradient(to bottom, #999 0%,#666 100%);
+    background: linear-gradient(to bottom, #888 0%,#666 100%);
   }
 
   .only_images_notification {
