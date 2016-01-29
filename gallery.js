@@ -175,7 +175,7 @@ function createImageElement(img, idx) {
         imgEl.setAttribute('title', title);
     }
     
-    imgEl.setAttribute('src', img.getAttribute('src'))
+    imgEl.setAttribute('src', img.getAttribute('src'));
     el.appendChild(imgEl);
     
     return el;
