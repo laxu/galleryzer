@@ -1,12 +1,12 @@
 {
     "name": "Only images",
-    "version": "0.9.5",
+    "version": "1.0.0",
     "manifest_version": 2,
     "description": "Creates a gallery view of images on page.",
     "permissions": ["tabs", "storage", "http://*/*", "https://*/*"],
     "browser_action": {
-        "default_icon": "images/icon.png",
-        "default_title": "Only images"
+        "default_icon": "images/icon-32.png",
+        "default_title": "Galleryzer"
     },
     "options_ui": {
         "page": "options.html",
@@ -22,5 +22,11 @@
             "matches": ["http://*/*", "https://*/*"]
         }
     ],
-    "web_accessible_resources": [ "gallery.css"]
+    "web_accessible_resources": [ "gallery.css"],
+    "icons": { 
+        "16": "images/icon-16.png",
+        "32": "images/icon-32.png",
+        "48": "images/icon-48.png",
+        "128": "images/icon-128.png" 
+    }
 }
