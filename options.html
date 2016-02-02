@@ -1,0 +1,32 @@
+<html>
+    <head>
+        <title>Galleryzer options</title>
+        <link rel="stylesheet" type="text/css" href="options.css">
+    </head>
+    <body>
+        <label>Minimum image size to show in gallery:</label>
+        <input type="number" id="min_width" placeholder="200" required> pixels
+        <br>
+        <label>Background:</label>
+        <select id="background">
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+        </select>
+        <br><br>
+        <button id="save_button">Save settings</button><div id="status"></div>
+        <div id="help">
+            <h3>Keyboard shortcuts:</h3>
+            <table>
+                <thead>
+                    <tr><td>Key</td><td>Function</td></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Escape</td><td>Close large image view when open, close gallery</td></tr>
+                    <tr><td>Left/right arrow</td><td>Show previous/next image when large image view is open</td></tr>
+                </tbody>
+            </table>
+            <p>Options are applied when reloading or changing page.</p>
+        </div>
+        <script type="text/javascript" src="options.js"></script>
+    </body>
+</html>
