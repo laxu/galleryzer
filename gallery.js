@@ -15,7 +15,7 @@ function getSettings() {
 
 getSettings();
 
-var prefix = 'only_images_',      //Prefix to avoid clashing classes etc
+var prefix = 'galleryzer_',      //Prefix to avoid clashing classes etc
     galleryImageClass = prefix + 'gallery_image',
 
     frameID = prefix + 'gallery_frame',

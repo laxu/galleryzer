@@ -1,6 +1,6 @@
 @charset 'UTF-8';
 
-#only_images_gallery_frame {
+#galleryzer_gallery_frame {
   display: none;
   position: fixed;
   z-index: 99990;
@@ -13,7 +13,7 @@
   background: rgba(0, 0, 0, .25);
 }
 
-#only_images_close_button {
+#galleryzer_close_button {
   position: absolute;
   top: -15px;
   right: -16px;
@@ -25,13 +25,13 @@
   font: normal 12pt/1 Helvetica, Arial !important;
 }
 
-  #only_images_close_button:hover {
+  #galleryzer_close_button:hover {
     cursor: pointer;
     color: #eee;
     background: linear-gradient(to bottom, #888 0%,#666 100%);
   }
 
-  .only_images_notification {
+  .galleryzer_notification {
     position: absolute;
     top: 2rem;
     left: 50%;
@@ -45,7 +45,7 @@
     border-radius: 2px !important;
   }
 
-  #only_images_gallery_background {
+  #galleryzer_gallery_background {
     display:none;
     z-index: 99998;
     position: fixed;
@@ -58,7 +58,7 @@
     background: rgba(0, 0, 0, .75);
   }
 
-    #only_images_gallery_preview {
+    #galleryzer_gallery_preview {
       display:none;
       position: absolute;
       z-index: 99999;
@@ -75,29 +75,29 @@
       border-radius: 2px !important;
     }
 
-      #only_images_gallery_preview.loading {
+      #galleryzer_gallery_preview.loading {
         width: 250px;
         overflow: hidden;
       }
 
-      #only_images_gallery_preview img {
+      #galleryzer_gallery_preview img {
         display:block;
         background-color: #111;
         max-width: calc(100vw - 40px);
         max-height: calc(100vh - 40px);
       }
 
-        #only_images_gallery_preview #only_images_preview_spinner {
+        #galleryzer_gallery_preview #galleryzer_preview_spinner {
           position: relative;
           top: 109px;
           left: 109px;
         }
 
-        #only_images_gallery_preview img:hover { 
+        #galleryzer_gallery_preview img:hover { 
           cursor: pointer; 
         }
         
-    #only_images_gallery_container {
+    #galleryzer_gallery_container {
       position: relative;
       box-sizing: border-box;
       width: calc(100% - 40px);
@@ -110,14 +110,14 @@
       color: #fff;
     }
 
-        #only_images_gallery_container p {
+        #galleryzer_gallery_container p {
           font: 1em Helvetica, Arial !important;
           color: #222 !important;
           margin: 0 5px 10px 5px !important;
           padding: 0 !important;
         }
 
-        #only_images_gallery_wrapper {
+        #galleryzer_gallery_wrapper {
           overflow: auto;
           width: 100%;
           height: 100%;
@@ -125,7 +125,7 @@
           box-sizing: border-box;
         }
     
-        #only_images_gallery_content {
+        #galleryzer_gallery_content {
           -webkit-column-count: 2;
           -webkit-column-gap: 5px;
           column-count: 2;
@@ -135,7 +135,7 @@
         }
 
         @media only screen and (min-width: 900px) {
-          #only_images_gallery_content {
+          #galleryzer_gallery_content {
             -webkit-column-count: 3;
             column-count: 3;
             
@@ -143,13 +143,13 @@
         }
 
         @media only screen and (min-width: 1100px) {
-          #only_images_gallery_content {
+          #galleryzer_gallery_content {
             -webkit-column-count: 4;
             column-count: 4;
           }
         }
 
-          .only_images_gallery_image {
+          .galleryzer_gallery_image {
             display: inline-block;
             width: 100%;
             box-sizing: border-box;
@@ -159,11 +159,11 @@
             background: #555;
             border-radius: 2px !important;
           }
-            .only_images_gallery_image:hover { 
+            .galleryzer_gallery_image:hover { 
               cursor: pointer; 
             }
         
-            .only_images_gallery_image img {
+            .galleryzer_gallery_image img {
               display:block;
               background-color: #111;
               max-width: 100%;
@@ -173,7 +173,7 @@
 
   /* Loader */
 
-  #only_images_gallery_frame .only_images_loader {
+  #galleryzer_gallery_frame .galleryzer_loader {
     font-size: 10px;
     margin: 50px auto;
     text-indent: -9999em;
@@ -194,7 +194,7 @@
     transform: translateZ(0);
   }
 
-  #only_images_gallery_frame .only_images_loader:before {
+  #galleryzer_gallery_frame .galleryzer_loader:before {
     width: 50%;
     height: 50%;
     background: #0dc5c1;
@@ -205,7 +205,7 @@
     content: '';
   }
 
-  #only_images_gallery_frame .only_images_loader:after {
+  #galleryzer_gallery_frame .galleryzer_loader:after {
     background: #333;
     width: 75%;
     height: 75%;
@@ -243,35 +243,35 @@
 
 /* Light theme */
 
-#only_images_gallery_frame.light #only_images_gallery_preview, 
-#only_images_gallery_frame.light #only_images_gallery_container, 
-#only_images_gallery_frame.light .only_images_loader:after {
+#galleryzer_gallery_frame.light #galleryzer_gallery_preview, 
+#galleryzer_gallery_frame.light #galleryzer_gallery_container, 
+#galleryzer_gallery_frame.light .galleryzer_loader:after {
   background: #ddd;
 }
 
-#only_images_gallery_frame.light #only_images_gallery_container {
+#galleryzer_gallery_frame.light #galleryzer_gallery_container {
   color: #222;
 }
-#only_images_gallery_frame.light #only_images_close_button {
+#galleryzer_gallery_frame.light #galleryzer_close_button {
   color: #222;
   background: linear-gradient(to bottom, #ddd 0%,#aaa 100%);
 }
 
-#only_images_gallery_frame.light #only_images_close_button:hover {
+#galleryzer_gallery_frame.light #galleryzer_close_button:hover {
   color: #111;
   background: linear-gradient(to bottom, #ccc 0%,#999 100%);
 }
 
-#only_images_gallery_frame.light .only_images_gallery_image {
+#galleryzer_gallery_frame.light .galleryzer_gallery_image {
   background: #eee;
   border: 1px solid #ccc;
 }
 
-#only_images_gallery_frame.light .only_images_gallery_image img {
+#galleryzer_gallery_frame.light .galleryzer_gallery_image img {
   background-color: #999;
   border: 1px solid #ccc; 
 }
 
-#only_images_gallery_frame.light #only_images_gallery_preview img {
+#galleryzer_gallery_frame.light #galleryzer_gallery_preview img {
   background-color: #999;
 }

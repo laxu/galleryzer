@@ -1,4 +1,4 @@
-# only-images
+# Galleryzer
 Chrome image gallery extension. Creates an image gallery out of all the images on page that are above the size specified in extension settings (to avoid showing header and banner images etc).
 
 * Lightweight - doesn't use any additional Javascript libraries.
