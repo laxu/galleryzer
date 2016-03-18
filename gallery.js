@@ -26,8 +26,9 @@ var prefix = 'galleryzer_',      //Prefix to avoid clashing classes etc
 
     imgURL, altImgURL,  //Current image preview URLs
 
-    prevBodyPosition,   //Used for saving previous body position state
-    prevBodyOverflow,   //Used for saving previous body overflow state
+    prevBodyPosition,               //Used for saving previous body position state
+    prevBodyOverflow,               //Used for saving previous body overflow state
+    prevScroll = { x: 0, y: 0 },    //Used for saving previous scroll position
     
     allImages = [],     //All images in page
     images = [],        //Images suitable for gallery
@@ -58,7 +59,7 @@ function getWindowSize()
     };
 }
 
-var windowSize = getWindowSize();
+// var windowSize = getWindowSize();
 
 /**
  * Set element CSS
@@ -96,8 +97,13 @@ function hidePreview()
 function showGallery()
 {
     showEl(frame);
+    
+    //Save some page settings for later
     prevBodyPosition = document.body.style.position;
     prevBodyOverflow = document.body.style.overflow;
+    prevScroll.x = window.scrollX;
+    prevScroll.y = window.scrollY;
+    
     document.body.style.position = 'fixed';
     document.body.style.overflow = 'hidden';    //Prevent scrolling page
     galleryOpen = true;
@@ -109,9 +115,14 @@ function hideGallery()
     hideEl(frame);
     document.body.style.position = prevBodyPosition;
     document.body.style.overflow = prevBodyOverflow;
+    window.scrollTo(prevScroll.x, prevScroll.y);
     galleryOpen = false;
 }
 
+/**
+ * Show notification
+ * @param  {string} message Message to show
+ */
 function notify(message) {
     var el = document.createElement('div');
     el.className = prefix + 'notification';
@@ -336,7 +347,7 @@ function bindEventListeners() {
                 imgURL = altImgURL; 
             }
 
-            windowSize = getWindowSize();
+            // windowSize = getWindowSize();
 
             if(imgURL !== previewImg.getAttribute('src')) {
                 preview.className = 'loading';
