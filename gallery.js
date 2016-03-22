@@ -14,7 +14,7 @@ var PREFIX = 'galleryzer_',      //Prefix to avoid clashing classes etc
     prevScroll = { x: 0, y: 0 },    //Used for saving previous scroll position
     
     images = [],                    //Images suitable for gallery
-    imageSrcList = [],              //List of image sources to prevent duplicates
+    allImageSrcList = [],           //List of all image sources to prevent duplicates
 
     settings,
 
@@ -183,16 +183,35 @@ function findForumNav() {
  */
 function processSingleImage() {
     this._hasGalleryzerLoader = true;
+    if(!this.src) {
+        if(this.getAttribute('data-src')) {
+            // Tell XenForo lazyload plugin to fuck off
+            var clone = this.cloneNode();
+            clone.src = this.getAttribute('data-src');
+            this.parentNode.replaceChild(clone, this);
+            clone.addEventListener('load', processSingleImage, false);
+        }
+        return; //No source available or element replaced
+    }
+    if(allImageSrcList.indexOf(this.src) === -1) {
+        allImageSrcList.push(this.src);
+    } else {
+        //Duplicate
+        return;
+    }
     if(this.complete) {
-        if(!this._galleryzed && imageSrcList.indexOf(this.src) === -1) {
-            if(this.width >= settings.minWidth && this.height >= desiredHeight) {
-                imageSrcList.push(this.src);
-                images.push(this);
-                if(renderTimer) {
-                    clearTimeout(renderTimer);
-                }
-                renderTimer = setTimeout(renderImages, RENDER_DELAY);
+        if(this._galleryzed || this._galleryzerRejected) {
+            return;
+        }
+        if(this.width >= settings.minWidth && this.height >= desiredHeight) {
+            images.push(this);
+            if(renderTimer) {
+                clearTimeout(renderTimer);
             }
+            renderTimer = setTimeout(renderImages, RENDER_DELAY);
+        } else {
+            // Unsuitable image
+            this._galleryzerRejected = true;
         }
     }
 }
@@ -204,12 +223,10 @@ function processSingleImage() {
 function processImages() {
     for(var idx = 0, len = document.images.length; idx < len; idx++) {
         var img = document.images[idx];
-        if(!img._galleryzed && !img._hasGalleryzerLoader) {
-            if(img.complete) {
-                processSingleImage.call(img);
-            } else {
-                img.addEventListener('load', processSingleImage, false);
-            }
+        if(img.complete) {
+            processSingleImage.call(img);
+        } else if(!img._hasGalleryzerLoader) {
+            img.addEventListener('load', processSingleImage, false);
         }
     }
 }
@@ -252,12 +269,14 @@ function createGalleryImageElement(img) {
     imgEl.style.height = 'auto';
 
     el.appendChild(imgEl);
+    
     imgEl._galleryzed = true;
     img._galleryzed = true;
     img._galleryzedEl = el;
 
     imgEl.style.opacity = 0;
     var start = null;
+
     function fadeIn(timestamp) {
         if(!start) {
             start = timestamp;
@@ -447,7 +466,7 @@ function buildFrame() {
     el.className = settings.background;
     el.innerHTML = '<div id="' + PREFIX + 'gallery_background"></div>' +
     '<div id="' + PREFIX + 'gallery_preview"><div class="' + PREFIX + 'loader"></div><img id="' + PREFIX + 'preview_image"></div>' +
-    '<div id="' + PREFIX + 'gallery_container"><div id="' + PREFIX + 'gallery_wrapper"><div id="' + PREFIX + 'close_button">X</div>' + 
+    '<div id="' + PREFIX + 'gallery_container"><div id="' + PREFIX + 'close_button">X</div><div id="' + PREFIX + 'gallery_wrapper">' + 
     '<div id="' + PREFIX + 'gallery_content"></div></div></div>';
     return el;
 }
