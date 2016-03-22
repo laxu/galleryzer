@@ -143,6 +143,9 @@ function hideGallery() {
     document.body.style.position = prevBodyPosition;
     document.body.style.overflow = prevBodyOverflow;
     window.scrollTo(prevScroll.x, prevScroll.y);
+    if(window.location.href.indexOf(AUTO_OPEN_PARAM) !== -1) {
+        window.history.replaceState({}, window.title, window.location.href.replace(AUTO_OPEN_PARAM, ''));
+    }
     galleryOpen = false;
 }
 
@@ -449,7 +452,7 @@ function bindEventListeners() {
                 var link = event.target.getAttribute('href');
                 if(link) {
                     var paramSign = link.split('?').length > 1 ? '&' : '?';
-                    window.location.href = link + paramSign + AUTO_OPEN_PARAM + '=1';
+                    window.location.href = link + paramSign + AUTO_OPEN_PARAM;
                 }
             }
         });
