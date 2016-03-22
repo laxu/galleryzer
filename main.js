@@ -1,16 +1,30 @@
-//Run when clicking toolbar icon
+console.log('running');
+/**
+ * Initialize gallery
+ */
+function initGallery() {
+    desiredHeight = settings.minWidth / imgHeightRatio;
+    buildGallery();
+    getImages()
+    //createImages();
+    console.log('images', images.length);
+    showGallery();
+}
 
 if(document.images.length) {
+    
 	if(galleryOpen) {
 		hideGallery();
 	}
 	else {
-        if(getImages()) {
-            buildGallery();
-            createImages();
-            showGallery();    
-        } else {
-            notify('No suitable images found.');
+        if(!settings) {
+            getSettings(initGallery);
         }
+        else {
+            initGallery();
+        }
+        
 	}	
+} else {
+    notify('No images on page.')
 }

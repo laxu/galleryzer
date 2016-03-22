@@ -1,20 +1,3 @@
-var settings = { 
-    minWidth: 200 
-};
-
-/**
- * Get settings of extension
- */
-function getSettings() {
-    chrome.extension.sendRequest({ getSettings: true }, function(response) {
-        if(response.settings) {
-            settings = response.settings;
-        }
-    });
-}
-
-getSettings();
-
 var prefix = 'galleryzer_',      //Prefix to avoid clashing classes etc
     galleryImageClass = prefix + 'gallery_image',
 
@@ -30,9 +13,11 @@ var prefix = 'galleryzer_',      //Prefix to avoid clashing classes etc
     prevBodyOverflow,               //Used for saving previous body overflow state
     prevScroll = { x: 0, y: 0 },    //Used for saving previous scroll position
     
-    allImages = [],     //All images in page
-    images = [],        //Images suitable for gallery
-    imageSrcList = [],  //List of image sources to prevent duplicates
+    allImagesCounter = 0,           //Number of images on page
+    images = [],                    //Images suitable for gallery
+    imageSrcList = [],              //List of image sources to prevent duplicates
+
+    settings,
 
     KEY_ESC         = 27,
     KEY_RIGHT_ARROW = 39,
@@ -45,19 +30,49 @@ var prefix = 'galleryzer_',      //Prefix to avoid clashing classes etc
     previewPadding = 20,    //Image preview container padding
     imgScaleRatio  = 2.5,    //Image scaling ratio
     imgHeightRatio = 1.5,   //Value to determine if image is tall enough (to skip header images, banners etc)
-    desiredHeight  = settings.minWidth / imgHeightRatio;
+    desiredHeight,
+
+    forumType,
+    forumNav,
+    forumNavWrapper,
+    forumNavElements = '.pagenav, .PageNav',
+    FORUM_XENFORO = 'xenforo',
+    FORUM_VB = 'vBulletin';
+
+if(window.location.href.indexOf('galleryzerAutoOpen') !== -1) {
+    document.addEventListener("DOMContentLoaded", function(event) {
+        getSettings(function() {
+            desiredHeight = settings.minWidth / imgHeightRatio;
+            buildGallery();
+            getImages();
+            showGallery();
+        })
+    });
+}
+
+/**
+ * Get settings of extension
+ * @param {Function} callback Execute callback when settings have been set
+ */
+function getSettings(callback) {
+    chrome.extension.sendRequest({ getSettings: true }, function(response) {
+        if(response.settings) {
+            settings = response.settings;
+            callback();
+        }
+    });
+}
 
 /**
  * Calculate window size
  * @return {Object} Window size object
  */
-function getWindowSize()
-{
-    return {
-        width: window.innerWidth,
-        height: window.innerHeight
-    };
-}
+// function getWindowSize() {
+//     return {
+//         width: window.innerWidth,
+//         height: window.innerHeight
+//     };
+// }
 
 // var windowSize = getWindowSize();
 
@@ -72,30 +87,44 @@ function setCss(el, obj) {
     }
 }
 
+/**
+ * Show element
+ * @param  {DOMElement} el Element to show
+ */
 function showEl(el) {
     el.style.display = 'block';
 }
 
+/**
+ * Hide element
+ * @param  {DOMElement} el Element to hide
+ */
 function hideEl(el) {
     el.style.display = 'none';
 }
 
-function showPreview() 
-{
+/**
+ * Show big image preview
+ */
+function showPreview() {
     showEl(bg);
     showEl(preview);
     previewOpen = true;
 }
 
-function hidePreview() 
-{
+/**
+ * Hide big image
+ */
+function hidePreview() {
     hideEl(preview);
     hideEl(bg);
     previewOpen = false;
 }
 
-function showGallery()
-{
+/**
+ * Show gallery
+ */
+function showGallery() {
     showEl(frame);
     
     //Save some page settings for later
@@ -109,8 +138,10 @@ function showGallery()
     galleryOpen = true;
 }
 
-function hideGallery() 
-{
+/**
+ * Hide gallery
+ */
+function hideGallery() {
     hidePreview();
     hideEl(frame);
     document.body.style.position = prevBodyPosition;
@@ -136,17 +167,44 @@ function notify(message) {
 }
 
 /**
+ * Find forum navigation element
+ */
+function findForumNav() {
+    // if(!settings.findForumNav) {
+    //     return null;
+    // }
+
+    var originalNav = document.querySelector(forumNavElements);
+    if(originalNav) {
+        return originalNav.cloneNode(true);
+    }
+
+    return null;
+}
+
+/**
+ * Detect forum type
+ * @return {string}
+ */
+function detectForumType() {
+    if(window.XenForo) {
+        return FORUM_XENFORO;
+    } else if(window.vBulletin) {
+        return FORUM_VB;
+    }
+    return null;
+}
+
+/**
  * Check if image is suitable for showing in gallery
  * @param  {DOMElement} img Source image element
  */
 function parseImage(img) {
     var parent = img.parentNode;
-    if(parent.className !== galleryImageClass && parent.id !== prefix + 'gallery_preview')
-    {        
-        if(img.width >= settings.minWidth && img.height >= desiredHeight)
-        {
-            if(imageSrcList.indexOf(img.src) === -1)
-            {
+    if(!img.getAttribute('galleryzed') || parent.className !== galleryImageClass && parent.id !== prefix + 'gallery_preview') {        
+        if(img.width >= settings.minWidth && img.height >= desiredHeight) {
+            if(imageSrcList.indexOf(img.src) === -1) {
+                img.setAttribute('galleryzed', true);
                 imageSrcList.push(img.src);
                 images.push(img);
             }
@@ -154,10 +212,46 @@ function parseImage(img) {
     }
 }
 
+function processImage() {
+    this._hasGalleryzerLoader = true;
+    if(this.complete) {
+        console.log('loaded image', this, this.width, this.height);
+        if(!this._galleryzed && imageSrcList.indexOf(this.src) === -1) {
+            if(this.width >= settings.minWidth && this.height >= desiredHeight) {
+                imageSrcList.push(this.src);
+                var idx = Array.prototype.indexOf.call(document.images, this);
+                images[idx] = this;
+                var imgEl = createImageElement(this, images.length - 1);
+                content.appendChild(imgEl);
+            }
+        }
+    }
+}
+
+function createImageLoadEvent(img, idx) {
+    return processImage.call(img, idx);
+}
+
+/**
+ * Find images on page and set them to gallery
+ * @return {boolean}
+ */
+function getImages() {
+    Array.prototype.forEach.call(document.images, function(img, idx) {
+        if(!img._galleryzed && !img._hasGalleryzerLoader) {
+            if(img.complete) {
+                processImage.call(img);
+            } else {
+                img.addEventListener('load', processImage);
+            }
+        }
+    });
+}
+
 /**
  * Create a gallery image element
  * @param  {DOMElement} img Image source element
- * @param  {number}     idx Image index
+ * @param  {Number}     idx Image index
  * @return {DOMElement}     Gallery image element
  */
 function createImageElement(img, idx) {
@@ -173,63 +267,22 @@ function createImageElement(img, idx) {
 
     el.setAttribute('data-idx', idx);
 
-    var imgEl = document.createElement('img');
-    
-    var alt = img.getAttribute('alt');
-    var title = img.getAttribute('title');
-    
-    if(alt) {
-        imgEl.setAttribute('alt', alt);    
-    }
+    var imgEl = img.cloneNode();
+    imgEl.removeAttribute('width');
+    imgEl.removeAttribute('height');
+    imgEl.style.width = 'auto';
+    imgEl.style.height = 'auto';
+    imgEl._galleryzed = true;
 
-    if(title) {
-        imgEl.setAttribute('title', title);
-    }
-    
-    imgEl.setAttribute('src', img.getAttribute('src'));
     el.appendChild(imgEl);
     
     return el;
 }
 
 /**
- * Find images on page and set them to gallery
- */
-function getImages() 
-{
-    contentChanged = false;
-    if(!images.length || allImages.length !== document.images.length)
-    {
-        allImages = document.images;
-        
-        Array.prototype.forEach.call(allImages, parseImage);
-        contentChanged = true;
-    }
-
-    return images.length ? true : false;
-}
-
-/**
- * Create gallery images
- */
-function createImages() {
-    if(images.length && contentChanged)
-    {
-        //Found suitable images
-        var fragment = document.createDocumentFragment();
-
-        images.forEach(function(img, idx) {
-            fragment.appendChild(createImageElement(img, idx));
-        });
-        
-        content.appendChild(fragment);
-    }
-}
-
-/**
  * Change preview image
- * @param  {number} direction -1 for back, 1 for forward
- * @param  {number} currentIdx Index of current image
+ * @param  {Number} direction -1 for back, 1 for forward
+ * @param  {Number} currentIdx Index of current image
  */
 function changePreviewImage(direction, currentIdx) {
     var newIndex = parseInt(currentIdx, 10) + direction;
@@ -251,15 +304,12 @@ function changePreviewImage(direction, currentIdx) {
  */
 function bindEventListeners() {
     //Close gallery or preview when esc is clicked
-    document.addEventListener('keyup', function(event)
-    {
+    document.addEventListener('keyup', function(event) {
         if (event.keyCode === KEY_ESC) {
             if(previewOpen) {
                 hidePreview();
                 return false;
-            }
-            else if(galleryOpen)
-            {
+            } else if(galleryOpen) {
                 hideGallery();
                 return false;
             }
@@ -298,10 +348,11 @@ function bindEventListeners() {
 
     //Image load event
     previewImg.addEventListener('load', function() {
-        if(this.complete) 
-        {
+        if(this.complete) {
             preview.style.width = 'auto';
             preview.style.height = 'auto';
+
+            previewImg._galleryzed = true;
 
             preview.className = '';
             hideEl(previewSpinner);
@@ -315,8 +366,7 @@ function bindEventListeners() {
     }, false);
     //Error loading image, show thumbnail
     previewImg.addEventListener('error', function() {
-        if(previewImg.getAttribute('src') !== altImgURL)
-        {
+        if(previewImg.getAttribute('src') !== altImgURL) {
             previewImg.setAttribute('src', altImgURL);
             
             hideEl(previewSpinner);
@@ -337,8 +387,7 @@ function bindEventListeners() {
             }
         }
 
-        if(!previewOpen)
-        {
+        if(!previewOpen) {
             imgURL = target.getAttribute('data-bigImage');
             imgIdx = target.getAttribute('data-idx');
             altImgURL = target.querySelector('img').getAttribute('src');
@@ -360,6 +409,18 @@ function bindEventListeners() {
             showPreview();
         }
     }, false);
+
+    if(forumNav) { 
+        forumNav.addEventListener('click', function(event) {
+            if(event.target.tagName === 'A') {
+                event.preventDefault();
+                event.stopPropagation();
+                var link = event.target.getAttribute('href');
+                var paramSign = link.split('?').length > 1 ? '&' : '?';
+                window.location.href = link + paramSign + 'galleryzerAutoOpen=1';
+            }
+        });
+    }
 }
 
 /**
@@ -375,6 +436,25 @@ function buildFrame() {
     '<div id="' + prefix + 'gallery_container"><div id="' + prefix + 'gallery_wrapper"><div id="' + prefix + 'close_button">X</div>' + 
     '<div id="' + prefix + 'gallery_content"></div></div></div>';
     return el;
+}
+
+/**
+ * Build forum navigation
+ */
+function buildForumNav() {
+    var firstChild = container.firstChild;
+    forumNavWrapper = document.createElement('div');
+    forumNavWrapper.setAttribute('id', prefix + 'forum_nav_wrapper');
+    forumNavWrapper.appendChild(forumNav);
+
+    forumNav.className += ' ' + prefix + 'forum_real_nav';
+    forumNav.removeAttribute('align');
+
+    if (firstChild) {
+        container.insertBefore(forumNavWrapper, firstChild);
+    } else {
+        container.appendChild(forumNavWrapper);
+    }
 }
 
 /**
@@ -396,6 +476,11 @@ function buildGallery() {
     previewSpinner = preview.querySelector('.' + prefix + 'loader');
     bg = frame.querySelector('#' + prefix + 'gallery_background');
     closeButton = container.querySelector('#' + prefix + 'close_button');
+
+    forumNav = findForumNav();
+    if(forumNav) {
+        buildForumNav();
+    }
 
     bindEventListeners();
 }
