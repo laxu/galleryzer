@@ -1,6 +1,6 @@
 {
     "name": "Galleryzer",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "manifest_version": 2,
     "description": "Creates a gallery view of images on page.",
     "permissions": ["tabs", "storage", "http://*/*", "https://*/*"],

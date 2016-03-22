@@ -166,9 +166,9 @@ function notify(message) {
  * Find forum navigation element
  */
 function findForumNav() {
-    // if(!settings.findForumNav) {
-    //     return null;
-    // }
+    if(!settings.findForumNav) {
+        return null;
+    }
 
     var originalNav = document.querySelector(forumNavElements);
     if(originalNav) {
@@ -440,7 +440,7 @@ function bindEventListeners() {
         }
     }, false);
 
-    if(forumNav) { 
+    if(settings.findForumNav && forumNav) { 
         //Add auto open gallery parameter when clicking forum nav link
         forumNav.addEventListener('click', function(event) {
             if(event.target.tagName === 'A') {
