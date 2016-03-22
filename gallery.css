@@ -32,7 +32,7 @@
   }
 
   .galleryzer_notification {
-    position: absolute;
+    position: fixed;
     top: 2rem;
     left: 50%;
     transform: translate(-50%, 0);
@@ -57,6 +57,24 @@
     padding: 0;
     background: rgba(0, 0, 0, .75);
   }
+
+    #galleryzer_forum_nav_wrapper {
+      height: 30px;
+      padding: 0 .5rem .5rem;
+      box-sizing: border-box;
+    }
+
+      #galleryzer_forum_real_nav {
+        margin: 0;
+      }
+
+        #galleryzer_forum_real_nav .pageNavHeader {
+          margin-bottom: 0;
+        }
+
+    #galleryzer_forum_nav_wrapper + #galleryzer_gallery_wrapper {
+      height: calc(100% - 30px);
+    }
 
     #galleryzer_gallery_preview {
       display:none;
@@ -160,7 +178,8 @@
             border-radius: 2px !important;
           }
             .galleryzer_gallery_image:hover { 
-              cursor: pointer; 
+              cursor: pointer;
+              background: #666;
             }
         
             .galleryzer_gallery_image img {
@@ -169,6 +188,7 @@
               max-width: 100%;
               margin: 0;
               padding: 0;
+              transition: opacity 800ms;
             }
 
   /* Loader */

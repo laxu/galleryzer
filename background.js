@@ -1,6 +1,14 @@
 // Called when the user clicks on the browser action.
 chrome.browserAction.onClicked.addListener(function (tab) {
-    chrome.tabs.executeScript(null, {file: "main.js"});
+    chrome.tabs.executeScript(null, {file: 'main.js'});
+});
+
+chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
+    //if(changeInfo.status === 'complete') {
+        if(tab.url.indexOf('galleryzerAutoOpen') !== -1) {
+            //chrome.tabs.executeScript(tabId, {file: 'main.js', runAt: 'document_end'});         
+        }
+    //}
 });
 
 chrome.extension.onRequest.addListener(

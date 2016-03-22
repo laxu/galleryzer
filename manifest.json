@@ -1,6 +1,6 @@
 {
     "name": "Galleryzer",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "manifest_version": 2,
     "description": "Creates a gallery view of images on page.",
     "permissions": ["tabs", "storage", "http://*/*", "https://*/*"],
@@ -19,7 +19,8 @@
         {
             "js": [ "gallery.js" ],
             "css": [ "gallery.css" ],
-            "matches": ["http://*/*", "https://*/*"]
+            "matches": ["http://*/*", "https://*/*"],
+            "run_at": "document_start"
         }
     ],
     "web_accessible_resources": [ "gallery.css"],
