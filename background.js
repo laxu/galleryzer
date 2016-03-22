@@ -17,7 +17,8 @@ chrome.extension.onRequest.addListener(
             //Defaults
             var defaults = {
                 minWidth: 200,
-                background: 'dark'
+                background: 'dark',
+                findForumNav: true
             };
 
             //Load settings
@@ -25,7 +26,8 @@ chrome.extension.onRequest.addListener(
                 sendResponse({ 
                     settings: {
                         minWidth: items.minWidth,
-                        background: items.background
+                        background: items.background,
+                        findForumNav: items.findForumNav
                     }
                 });
             });
