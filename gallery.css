@@ -178,7 +178,8 @@
             border-radius: 2px !important;
           }
             .galleryzer_gallery_image:hover { 
-              cursor: pointer; 
+              cursor: pointer;
+              background: #666;
             }
         
             .galleryzer_gallery_image img {
@@ -187,6 +188,7 @@
               max-width: 100%;
               margin: 0;
               padding: 0;
+              transition: opacity 800ms;
             }
 
   /* Loader */
