@@ -162,7 +162,7 @@ function notify(message) {
     setTimeout(function() {
         hideEl(el);
         document.body.removeChild(el);
-    }, 2000);
+    }, 3000);
 }
 
 /**
@@ -232,6 +232,13 @@ function processImages() {
             img.addEventListener('load', processSingleImage, false);
         }
     }
+
+    var timer = setTimeout(function() {
+        if(!images.length) {
+            notify('No suitable images found.');
+            clearTimeout(timer);
+        }
+    }, 3000);
 }
 
 /**
