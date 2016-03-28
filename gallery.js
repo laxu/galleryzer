@@ -38,7 +38,8 @@ var PREFIX = 'galleryzer_',      //Prefix to avoid clashing classes etc
 
     forumNav,
     forumNavWrapper,
-    forumNavElements = '.pagenav, .PageNav',
+    forumNavElements = '.pagenav, .PageNav, .pagelinks, .paging, .pagination',
+    FORUM_SMF = 'SMF',
     FORUM_XENFORO = 'xenforo',
     FORUM_VB = 'vBulletin',
     AUTO_OPEN_PARAM = 'galleryzerAutoOpen';
@@ -492,6 +493,11 @@ function buildForumNav() {
 
     forumNav.className += ' ' + PREFIX + 'forum_real_nav';
     forumNav.removeAttribute('align');
+
+    var smfGoDownLink = forumNav.querySelector('a[href="#lastPost"]');
+    if(smfGoDownLink) {
+        forumNav.removeChild(smfGoDownLink); // Remove SMF "Go down" link
+    }
 
     if (firstChild) {
         container.insertBefore(forumNavWrapper, firstChild);

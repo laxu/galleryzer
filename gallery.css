@@ -64,11 +64,11 @@
       box-sizing: border-box;
     }
 
-      #galleryzer_forum_real_nav {
+      .galleryzer_forum_real_nav {
         margin: 0;
       }
 
-        #galleryzer_forum_real_nav .pageNavHeader {
+        .galleryzer_forum_real_nav .pageNavHeader {
           margin-bottom: 0;
         }
 
