@@ -418,7 +418,7 @@ function changePreviewText(img) {
     }
 
     if(textContent.hasChildNodes()) {
-        previewTextContext.appendChild(textContent);
+        previewTextContext.appendChild(textContent.cloneNode(true));
         showEl(previewTextContext);
     } else {
         hideEl(previewTextContext);
