@@ -5,7 +5,7 @@ var PREFIX = 'galleryzer_',      //Prefix to avoid clashing classes etc
 
     //Elements will be referenced with these
     frame, container, content, bg, closeButton,
-    preview, previewImg, previewSpinner, 
+    preview, previewImg, previewSpinner, previewTextContext, notifications,
 
     imgURL, altImgURL,  //Current image preview URLs
 
@@ -35,6 +35,9 @@ var PREFIX = 'galleryzer_',      //Prefix to avoid clashing classes etc
     renderTimer,
     RENDER_DELAY = 100,
     FADE_IN_DELAY = 400,
+    NO_IMAGES_FOUND_WAIT_DELAY = 4000,
+    NOTIFICATION_CLOSE_DELAY = 3000,
+    NOTIFICATION_FADE_DELAY = 1000,
 
     forumNav,
     forumNavWrapper,
@@ -42,7 +45,7 @@ var PREFIX = 'galleryzer_',      //Prefix to avoid clashing classes etc
     FORUM_SMF = 'SMF',
     FORUM_XENFORO = 'xenforo',
     FORUM_VB = 'vBulletin',
-    AUTO_OPEN_PARAM = 'galleryzerAutoOpen';
+    AUTO_OPEN_PARAM = 'galleryzerAutoOpen=1';
 
 if(window.location.href.indexOf(AUTO_OPEN_PARAM) !== -1) {
     document.addEventListener("DOMContentLoaded", function(event) {
@@ -69,6 +72,7 @@ function getSettings(callback) {
 function initGallery() {
     desiredHeight = settings.minWidth / imgHeightRatio;
     buildGallery();
+    notify('Finding suitable images...');
     processImages();
     showGallery();
 }
@@ -155,15 +159,43 @@ function hideGallery() {
  * @param  {string} message Message to show
  */
 function notify(message) {
-    var el = document.createElement('div');
+    el = document.createElement('div');
     el.className = PREFIX + 'notification';
     el.innerHTML = message;
-    document.body.appendChild(el);
+    notifications.appendChild(el);
+    hideNotification(el);
+}
 
-    setTimeout(function() {
-        hideEl(el);
-        document.body.removeChild(el);
-    }, 3000);
+/**
+ * Hide all notifications
+ * @param  {Boolean} [instantly] Hide all notifications instantly
+ */
+function hideAllNotifications(instantly) {
+    if (!notifications.hasChildNodes()) {
+        return;
+    }
+    var notificationEls = notifications.childNodes;
+    notificationEls.forEach(function(el) {
+        hideNotification(el, instantly);
+    });
+}
+
+/**
+ * Hide notification
+ * @param  {HTMLElement} el      Notification to hide
+ * @param  {Boolean} [instantly] Hide notification instantly
+ */
+function hideNotification(el, instantly) {
+    if(instantly) {
+        notifications.removeChild(el);
+    } else {
+        setTimeout(function() {
+            el.className += ' ' + PREFIX + 'notification_fade';
+            setTimeout(function() {
+                notifications.removeChild(el); 
+            }, NOTIFICATION_FADE_DELAY);
+        }, NOTIFICATION_CLOSE_DELAY);
+    }
 }
 
 /**
@@ -209,10 +241,12 @@ function processSingleImage() {
         }
         if(this.width >= settings.minWidth && this.height >= desiredHeight) {
             images.push(this);
+            
             if(renderTimer) {
                 clearTimeout(renderTimer);
             }
             renderTimer = setTimeout(renderImages, RENDER_DELAY);
+            hideAllNotifications(true);
         } else {
             // Unsuitable image
             this._galleryzerRejected = true;
@@ -237,9 +271,9 @@ function processImages() {
     var timer = setTimeout(function() {
         if(!images.length) {
             notify('No suitable images found.');
-            clearTimeout(timer);
         }
-    }, 3000);
+        clearTimeout(timer);
+    }, NO_IMAGES_FOUND_WAIT_DELAY);
 }
 
 /**
@@ -284,6 +318,7 @@ function createGalleryImageElement(img) {
     imgEl._galleryzed = true;
     img._galleryzed = true;
     img._galleryzedEl = el;
+    el._galleryzedOriginalImgNode = img;
 
     imgEl.style.opacity = 0;
     var start = null;
@@ -344,6 +379,52 @@ function changePreviewImage(direction) {
         hidePreview();
         el.dispatchEvent(new Event('click', { bubbles: true }));
     }
+}
+
+/**
+ * Set preview text
+ * @param {HTMLElement} img
+ */
+function changePreviewText(img) {
+    while (previewTextContext.lastChild) {
+        previewTextContext.removeChild(previewTextContext.lastChild); // Clear text context box
+    }
+
+    var textContent;
+
+    if(img._galleryzedTextContent) {
+        textContent = img._galleryzedTextContent;
+    } else {
+        // Find context text for image
+        var textContentNode = img.parentNode.tagName === 'A' ? img.parentNode.parentNode : img.parentNode;
+        var treeWalker = document.createTreeWalker(
+            textContentNode, 
+            NodeFilter.SHOW_TEXT, 
+            { 
+                acceptNode: function(node) { 
+                    return node.data.trim().length ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP 
+                }
+            }
+        );
+        
+        textContent = document.createDocumentFragment();
+        
+        while(treeWalker.nextNode()) {
+            var textEl = document.createElement('p');
+            textEl.textContent = treeWalker.currentNode.data;
+            textContent.appendChild(textEl);
+        }
+        img._galleryzedTextContent = textContent;
+    }
+
+    if(textContent.hasChildNodes()) {
+        previewTextContext.appendChild(textContent);
+        showEl(previewTextContext);
+    } else {
+        hideEl(previewTextContext);
+    }
+
+    
 }
 
 /**
@@ -445,8 +526,10 @@ function bindEventListeners() {
                 showEl(previewSpinner);
                 previewImg.setAttribute('src', imgURL);
                 previewImg._galleryzerImageEl = target;
+                
+                changePreviewText(target._galleryzedOriginalImgNode);
             }
-                        
+     
             showPreview();
         }
     }, false);
@@ -476,8 +559,8 @@ function buildFrame() {
     el.setAttribute('id', frameID);
     el.className = settings.background;
     el.innerHTML = '<div id="' + PREFIX + 'gallery_background"></div>' +
-    '<div id="' + PREFIX + 'gallery_preview"><div class="' + PREFIX + 'loader"></div><img id="' + PREFIX + 'preview_image"></div>' +
-    '<div id="' + PREFIX + 'gallery_container"><div id="' + PREFIX + 'close_button">X</div><div id="' + PREFIX + 'gallery_wrapper">' + 
+    '<div id="' + PREFIX + 'gallery_preview"><div class="' + PREFIX + 'loader"></div><img id="' + PREFIX + 'preview_image"><div id="' + PREFIX + 'preview_text"></div></div>' +
+    '<div id="' + PREFIX + 'gallery_container"><div id="' + PREFIX + 'close_button">X</div><div id="' + PREFIX + 'notification_container"></div><div id="' + PREFIX + 'gallery_wrapper">' + 
     '<div id="' + PREFIX + 'gallery_content"></div></div></div>';
     return el;
 }
@@ -522,9 +605,11 @@ function buildGallery() {
     content = container.querySelector('#' + PREFIX + 'gallery_content');
     preview = frame.querySelector('#' + PREFIX + 'gallery_preview');
     previewImg = preview.querySelector('#' + PREFIX + 'preview_image');
+    previewTextContext = preview.querySelector('#' + PREFIX + 'preview_text');
     previewSpinner = preview.querySelector('.' + PREFIX + 'loader');
     bg = frame.querySelector('#' + PREFIX + 'gallery_background');
     closeButton = container.querySelector('#' + PREFIX + 'close_button');
+    notifications = container.querySelector('#' + PREFIX + 'notification_container');
 
     forumNav = findForumNav();
     if(forumNav) {
