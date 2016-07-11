@@ -192,7 +192,11 @@ function hideNotification(el, instantly) {
         setTimeout(function() {
             el.className += ' ' + PREFIX + 'notification_fade';
             setTimeout(function() {
-                notifications.removeChild(el); 
+                try {
+                    notifications.removeChild(el);
+                } catch(e) {
+                    // Do nothing with error
+                } 
             }, NOTIFICATION_FADE_DELAY);
         }, NOTIFICATION_CLOSE_DELAY);
     }
