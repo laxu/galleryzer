@@ -1,5 +1,4 @@
-
-
+// Auto 
 if(window.location.href.indexOf(AUTO_OPEN_PARAM) !== -1) {
     document.addEventListener("DOMContentLoaded", function(event) {
         getSettings(initGallery);
