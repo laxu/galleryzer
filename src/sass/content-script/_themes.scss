@@ -1,0 +1,40 @@
+#galleryzer {
+	&_gallery_frame {
+		/* Light theme */
+    &.light {
+      #galleryzer_gallery_preview, 
+      #galleryzer_gallery_container, 
+      .galleryzer_loader:after {
+        background: #ddd;
+      }
+
+      #galleryzer_gallery_container {
+        color: #222;
+      }
+
+      #galleryzer_close_button {
+        color: #222;
+        background: linear-gradient(to bottom, #ddd 0%,#aaa 100%);
+
+        &:hover {
+          color: #111;
+          background: linear-gradient(to bottom, #ccc 0%,#999 100%);
+        }
+      }
+
+      .galleryzer_gallery_image {
+        background: #eee;
+        border: 1px solid #ccc;
+
+        img {
+          background-color: #999;
+          border: 1px solid #ccc; 
+        }
+      }
+
+      #galleryzer_gallery_preview img {
+        background-color: #999;
+      }
+    }
+  }
+}
