@@ -1,0 +1,31 @@
+{
+  "name": "galleryzer",
+  "version": "1.0.0",
+  "description": "Creates a gallery from suitable images on a website",
+  "dependencies": {},
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "node-sass": "^3.8.0",
+    "sass-loader": "^4.0.0",
+    "webpack": "^1.13.1"
+  },
+  "scripts": {
+    "build": "gulp run build:dev",
+    "buildprod": "gulp run build:prod"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/laxu/galleryzer.git"
+  },
+  "keywords": [
+    "gallery",
+    "chrome",
+    "extension"
+  ],
+  "author": "Mikko Lakomaa",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/laxu/galleryzer/issues"
+  },
+  "homepage": "https://github.com/laxu/galleryzer#readme"
+}
