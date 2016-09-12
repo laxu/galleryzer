@@ -8,5 +8,17 @@ Chrome image gallery extension. Creates an image gallery out of all the images o
 * Light and dark theme option.
 * Lightbox for showing image in full size. Also handles links leading to a larger version of the image.
 * Open from toolbar button, close by using Esc key, clicking toolbar button or clicking outside the frame of the gallery.
+* Tries to find context text near the original location of the image.
+
+## Development
+
+To get it running:
+```
+  npm install
+  npm run dev
+```
+
+To build: `npm run build`
+To build production version: `npm run build:prod`
 
 Copyright Mikko Lakomaa. [Creative Commons Attribution + Non-Commercial license.](http://creativecommons.org/licenses/by-nc/4.0/)
