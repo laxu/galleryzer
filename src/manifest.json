@@ -17,8 +17,8 @@
     },
     "content_scripts": [ 
         {
-            "js": [ "gallery.js" ],
-            "css": [ "gallery.css" ],
+            "js": [ "galleryzer.js" ],
+            "css": [ "galleryzer.css" ],
             "matches": ["http://*/*", "https://*/*"],
             "run_at": "document_start"
         }
