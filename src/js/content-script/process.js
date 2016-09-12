@@ -43,6 +43,9 @@ function processSingleImage() {
  * @return {boolean}
  */
 function processImages() {
+    if (!images.length) {
+        notify('Finding suitable images...');
+    }
     for(let i = 0, len = document.images.length; i < len; i++) {
         const img = document.images[i];
         if(img.complete) {
