@@ -1,30 +1,58 @@
-// Auto 
-if(window.location.href.indexOf(AUTO_OPEN_PARAM) !== -1) {
-    document.addEventListener("DOMContentLoaded", function(event) {
-        getSettings(initGallery);
-    });
-}
+'use strict';
 
-/**
- * Get settings of extension
- * @param {Function} callback Execute callback when settings have been set
- */
-function getSettings(callback) {
-    chrome.extension.sendRequest({ getSettings: true }, function(response) {
-        if(response.settings) {
-            settings = response.settings;
-            callback();
-        }
+import * as vars from './init';
+import * as helpers from './helpers';
+import { processImages } from './process';
+import { buildForumNav, findForumNav } from './forumNav';
+
+const frameID = PREFIX + 'gallery_frame';
+
+//Keyboard keycodes used
+const KEY_ESC         = 27;
+const KEY_RIGHT_ARROW = 39;
+const KEY_LEFT_ARROW  = 37;
+
+//Elements will be referenced with these
+let frame;
+let container;
+let bg;
+let closeButton;
+let preview;
+let previewImg;
+let previewSpinner;
+let previewTextContext;
+let forumNav;
+
+let settings;                       // Settings from chrome options will be loaded here
+
+let altImgURL;                      // Current image preview URL
+
+let prevBodyPosition;               // Used for saving previous body position state
+let prevBodyOverflow;               // Used for saving previous body overflow state
+let prevScroll = { x: 0, y: 0 };    // Used for saving previous scroll position
+
+let previewOpen = false;
+let galleryOpen = false;
+
+let imgHeightRatio = 1.5;   // Value to determine if image is tall enough (to skip header images, banners etc)
+
+const AUTO_OPEN_PARAM = 'galleryzerAutoOpen=1';
+
+// Auto 
+if(window.location.href.contains(AUTO_OPEN_PARAM)) {
+    document.addEventListener('DOMContentLoaded', function() {
+        helpers.getSettings(initGallery);
     });
 }
 
 /**
  * Initialize gallery
  */
-function initGallery() {
+function initGallery(responseSettings) {
+    settings = responseSettings;
     desiredHeight = settings.minWidth / imgHeightRatio;
     buildGallery();
-    notify('Finding suitable images...');
+    helpers.notify('Finding suitable images...');
     processImages();
     showGallery();
 }
@@ -34,8 +62,8 @@ function initGallery() {
  * Show big image preview
  */
 function showPreview() {
-    showEl(bg);
-    showEl(preview);
+    helpers.showEl(bg);
+    helpers.showEl(preview);
     previewOpen = true;
 }
 
@@ -43,8 +71,8 @@ function showPreview() {
  * Hide big image
  */
 function hidePreview() {
-    hideEl(preview);
-    hideEl(bg);
+    helpers.hideEl(preview);
+    helpers.hideEl(bg);
     previewOpen = false;
 }
 
@@ -52,7 +80,7 @@ function hidePreview() {
  * Show gallery
  */
 function showGallery() {
-    showEl(frame);
+    helpers.showEl(frame);
     
     //Save some page settings for later
     prevBodyPosition = document.body.style.position;
@@ -70,11 +98,11 @@ function showGallery() {
  */
 function hideGallery() {
     hidePreview();
-    hideEl(frame);
+    helpers.hideEl(frame);
     document.body.style.position = prevBodyPosition;
     document.body.style.overflow = prevBodyOverflow;
     window.scrollTo(prevScroll.x, prevScroll.y);
-    if(window.location.href.indexOf(AUTO_OPEN_PARAM) !== -1) {
+    if(window.location.href.contains(AUTO_OPEN_PARAM)) {
         window.history.replaceState({}, window.title, window.location.href.replace(AUTO_OPEN_PARAM, ''));
     }
     galleryOpen = false;
@@ -86,7 +114,7 @@ function hideGallery() {
  * @param  {Number} direction -1 for back, 1 for forward
  */
 function changePreviewImage(direction) {
-    var el = direction === 1 ? previewImg._galleryzerImageEl.nextSibling : previewImg._galleryzerImageEl.previousSibling;
+    let el = direction === 1 ? previewImg._galleryzerImageEl.nextSibling : previewImg._galleryzerImageEl.previousSibling;
     if(!el) {
         // First or last element, loop to the other end
         el = direction === 1 ? content.firstChild : content.lastChild;
@@ -107,19 +135,19 @@ function changePreviewText(img) {
         previewTextContext.removeChild(previewTextContext.lastChild); // Clear text context box
     }
 
-    var textContent;
+    let textContent;
 
     if(img._galleryzedTextContent) {
         textContent = img._galleryzedTextContent;
     } else {
         // Find context text for image
-        var textContentNode = img.parentNode.tagName === 'A' ? img.parentNode.parentNode : img.parentNode;
-        var treeWalker = document.createTreeWalker(
+        let textContentNode = img.parentNode.tagName === 'A' ? img.parentNode.parentNode : img.parentNode;
+        let treeWalker = document.createTreeWalker(
             textContentNode, 
             NodeFilter.SHOW_TEXT, 
             { 
                 acceptNode: function(node) { 
-                    return node.data.trim().length ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP 
+                    return node.data.trim().length ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP;
                 }
             }
         );
@@ -127,7 +155,7 @@ function changePreviewText(img) {
         textContent = document.createDocumentFragment();
         
         while(treeWalker.nextNode()) {
-            var textEl = document.createElement('p');
+            const textEl = document.createElement('p');
             textEl.textContent = treeWalker.currentNode.data;
             textContent.appendChild(textEl);
         }
@@ -136,9 +164,9 @@ function changePreviewText(img) {
 
     if(textContent.hasChildNodes()) {
         previewTextContext.appendChild(textContent.cloneNode(true));
-        showEl(previewTextContext);
+        helpers.showEl(previewTextContext);
     } else {
-        hideEl(previewTextContext);
+        helpers.hideEl(previewTextContext);
     }
 
     
@@ -166,12 +194,12 @@ function bindEventListeners() {
     }, false);
     
     //Close gallery when you click the transparent area outside it
-    frame.addEventListener('click', function(event) {
+    frame.addEventListener('click', function() {
         hideGallery();
     }, false);
 
     //Close gallery when you click the close button
-    closeButton.addEventListener('click', function(event) {
+    closeButton.addEventListener('click', function() {
         hideGallery();
     }, false);    
 
@@ -201,8 +229,8 @@ function bindEventListeners() {
             previewImg._galleryzed = true;
 
             preview.className = '';
-            hideEl(previewSpinner);
-            showEl(previewImg);
+            helpers.hideEl(previewSpinner);
+            helpers.showEl(previewImg);
         }
     }, false);
 
@@ -211,8 +239,8 @@ function bindEventListeners() {
         if(previewImg.getAttribute('src') !== altImgURL) {
             previewImg.setAttribute('src', altImgURL);
             
-            hideEl(previewSpinner);
-            showEl(previewImg);
+            helpers.hideEl(previewSpinner);
+            helpers.showEl(previewImg);
         }
     }, false);    
 
@@ -230,7 +258,7 @@ function bindEventListeners() {
         }
 
         if(!previewOpen) {
-            imgURL = target.getAttribute('data-bigImage');
+            let imgURL = target.getAttribute('data-bigImage');
             altImgURL = target.querySelector('img').getAttribute('src');
 
             if(!imgURL) { 
@@ -239,8 +267,8 @@ function bindEventListeners() {
 
             if(imgURL !== previewImg.getAttribute('src')) {
                 preview.className = 'loading';
-                hideEl(previewImg);
-                showEl(previewSpinner);
+                helpers.hideEl(previewImg);
+                helpers.showEl(previewSpinner);
                 previewImg.setAttribute('src', imgURL);
                 previewImg._galleryzerImageEl = target;
                 
@@ -257,9 +285,9 @@ function bindEventListeners() {
             if(event.target.tagName === 'A') {
                 event.preventDefault();
                 event.stopPropagation();
-                var link = event.target.getAttribute('href');
+                let link = event.target.getAttribute('href');
                 if(link) {
-                    var paramSign = link.split('?').length > 1 ? '&' : '?';
+                    const paramSign = link.split('?').length > 1 ? '&' : '?';
                     window.location.href = link + paramSign + AUTO_OPEN_PARAM;
                 }
             }
@@ -272,7 +300,7 @@ function bindEventListeners() {
  * @return {HTMLElement}
  */
 function buildFrame() {
-    var el = document.createElement('div');
+    let el = document.createElement('div');
     el.setAttribute('id', frameID);
     el.className = settings.background;
     el.innerHTML = '<div id="' + PREFIX + 'gallery_background"></div>' +
@@ -280,30 +308,6 @@ function buildFrame() {
     '<div id="' + PREFIX + 'gallery_container"><div id="' + PREFIX + 'close_button">X</div><div id="' + PREFIX + 'notification_container"></div><div id="' + PREFIX + 'gallery_wrapper">' + 
     '<div id="' + PREFIX + 'gallery_content"></div></div></div>';
     return el;
-}
-
-/**
- * Build forum navigation
- */
-function buildForumNav() {
-    var firstChild = container.firstChild;
-    forumNavWrapper = document.createElement('div');
-    forumNavWrapper.setAttribute('id', PREFIX + 'forum_nav_wrapper');
-    forumNavWrapper.appendChild(forumNav);
-
-    forumNav.className += ' ' + PREFIX + 'forum_real_nav';
-    forumNav.removeAttribute('align');
-
-    var smfGoDownLink = forumNav.querySelector('a[href="#lastPost"]');
-    if(smfGoDownLink) {
-        forumNav.removeChild(smfGoDownLink); // Remove SMF "Go down" link
-    }
-
-    if (firstChild) {
-        container.insertBefore(forumNavWrapper, firstChild);
-    } else {
-        container.appendChild(forumNavWrapper);
-    }
 }
 
 /**
@@ -328,9 +332,11 @@ function buildGallery() {
     closeButton = container.querySelector('#' + PREFIX + 'close_button');
     notifications = container.querySelector('#' + PREFIX + 'notification_container');
 
-    forumNav = findForumNav();
-    if(forumNav) {
-        buildForumNav();
+    if (settings.findForumNav) {
+        forumNav = findForumNav();
+        if(forumNav) {
+            buildForumNav(container, forumNav);
+        }
     }
 
     bindEventListeners();
