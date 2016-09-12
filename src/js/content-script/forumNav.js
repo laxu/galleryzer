@@ -1,11 +1,8 @@
-import { PREFIX } from './init';
-const forumNavElements = '.pagenav, .PageNav, .pagelinks, .paging, .pagination';
-
 /**
  * Build forum navigation
  * @
  */
-export function buildForumNav(container, forumNav) {
+function buildForumNav(container, forumNav) {
     let forumNavWrapper = document.createElement('div');
     forumNavWrapper.setAttribute('id', PREFIX + 'forum_nav_wrapper');
     forumNavWrapper.appendChild(forumNav);
@@ -30,8 +27,8 @@ export function buildForumNav(container, forumNav) {
 /**
  * Find forum navigation element
  */
-export function findForumNav() {
-    let originalNav = document.querySelector(forumNavElements);
+function findForumNav() {
+    let originalNav = document.querySelector(FORUM_NAV_ELEMENTS);
     if(originalNav) {
         return originalNav.cloneNode(true);
     }

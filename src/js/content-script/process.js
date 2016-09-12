@@ -1,14 +1,3 @@
-import { galleryImageClass, settings, content, desiredHeight } from './init';
-import { notify, hideAllNotifications } from './helpers';
-
-const RENDER_DELAY = 100;
-const FADE_IN_DELAY = 400;
-const NO_IMAGES_FOUND_WAIT_DELAY = 4000;
-
-let renderTimer;
-let images = [];                    // Images suitable for gallery
-let allImageSrcList = [];           // List of all image sources to prevent duplicates
-
 /**
  * Process an image to find if it's suitable for showing in the gallery
  */
@@ -24,7 +13,7 @@ function processSingleImage() {
         }
         return; //No source available or element replaced
     }
-    if(!allImageSrcList.contains(this.src)) {
+    if(allImageSrcList.indexOf(this.src) === -1) {
         allImageSrcList.push(this.src);
     } else {
         //Duplicate
@@ -158,7 +147,3 @@ function renderImages() {
         }
     }
 }
-
-export {
-    processImages
-};

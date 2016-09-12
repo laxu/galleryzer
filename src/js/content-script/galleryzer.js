@@ -1,45 +1,5 @@
-'use strict';
-
-import * as vars from './init';
-import * as helpers from './helpers';
-import { processImages } from './process';
-import { buildForumNav, findForumNav } from './forumNav';
-
-const frameID = PREFIX + 'gallery_frame';
-
-//Keyboard keycodes used
-const KEY_ESC         = 27;
-const KEY_RIGHT_ARROW = 39;
-const KEY_LEFT_ARROW  = 37;
-
-//Elements will be referenced with these
-let frame;
-let container;
-let bg;
-let closeButton;
-let preview;
-let previewImg;
-let previewSpinner;
-let previewTextContext;
-let forumNav;
-
-let settings;                       // Settings from chrome options will be loaded here
-
-let altImgURL;                      // Current image preview URL
-
-let prevBodyPosition;               // Used for saving previous body position state
-let prevBodyOverflow;               // Used for saving previous body overflow state
-let prevScroll = { x: 0, y: 0 };    // Used for saving previous scroll position
-
-let previewOpen = false;
-let galleryOpen = false;
-
-let imgHeightRatio = 1.5;   // Value to determine if image is tall enough (to skip header images, banners etc)
-
-const AUTO_OPEN_PARAM = 'galleryzerAutoOpen=1';
-
 // Auto 
-if(window.location.href.contains(AUTO_OPEN_PARAM)) {
+if(window.location.href.indexOf(AUTO_OPEN_PARAM) !== -1) {
     document.addEventListener('DOMContentLoaded', function() {
         helpers.getSettings(initGallery);
     });
@@ -57,7 +17,6 @@ function initGallery(responseSettings) {
     showGallery();
 }
 
-
 /**
  * Show big image preview
  */
@@ -73,6 +32,7 @@ function showPreview() {
 function hidePreview() {
     helpers.hideEl(preview);
     helpers.hideEl(bg);
+    helpers.hideEl(previewTextContext);
     previewOpen = false;
 }
 
@@ -102,7 +62,7 @@ function hideGallery() {
     document.body.style.position = prevBodyPosition;
     document.body.style.overflow = prevBodyOverflow;
     window.scrollTo(prevScroll.x, prevScroll.y);
-    if(window.location.href.contains(AUTO_OPEN_PARAM)) {
+    if(window.location.href.indexOf(AUTO_OPEN_PARAM) !== -1) {
         window.history.replaceState({}, window.title, window.location.href.replace(AUTO_OPEN_PARAM, ''));
     }
     galleryOpen = false;
@@ -163,13 +123,8 @@ function changePreviewText(img) {
     }
 
     if(textContent.hasChildNodes()) {
-        previewTextContext.appendChild(textContent.cloneNode(true));
-        helpers.showEl(previewTextContext);
-    } else {
-        helpers.hideEl(previewTextContext);
-    }
-
-    
+        previewTextContext.appendChild(textContent.cloneNode(true));   
+    }  
 }
 
 /**
@@ -231,6 +186,7 @@ function bindEventListeners() {
             preview.className = '';
             helpers.hideEl(previewSpinner);
             helpers.showEl(previewImg);
+            helpers.showEl(previewTextContext);
         }
     }, false);
 
@@ -241,6 +197,7 @@ function bindEventListeners() {
             
             helpers.hideEl(previewSpinner);
             helpers.showEl(previewImg);
+            helpers.showEl(previewTextContext);
         }
     }, false);    
 
@@ -271,7 +228,6 @@ function bindEventListeners() {
                 helpers.showEl(previewSpinner);
                 previewImg.setAttribute('src', imgURL);
                 previewImg._galleryzerImageEl = target;
-                
                 changePreviewText(target._galleryzedOriginalImgNode);
             }
      

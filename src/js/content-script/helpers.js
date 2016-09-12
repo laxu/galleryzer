@@ -1,10 +1,3 @@
-import { PREFIX, notifications } from './init';
-
-const NOTIFICATION_CLOSE_DELAY = 3000;
-const NOTIFICATION_FADE_DELAY = 1000;
-
-let settings;
-
 /**
  * Get settings of extension
  * @param {Function} callback Execute callback when settings have been set
@@ -94,7 +87,7 @@ function hideNotification(el, instantly) {
     }
 }
 
-export default {
+const helpers = {
     getSettings,
     setCss,
     showEl,
