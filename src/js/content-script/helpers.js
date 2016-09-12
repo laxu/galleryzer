@@ -95,6 +95,7 @@ function hideNotification(el, instantly) {
 }
 
 export default {
+    getSettings,
     setCss,
     showEl,
     hideEl,
