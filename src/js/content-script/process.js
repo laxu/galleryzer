@@ -1,3 +1,14 @@
+import { galleryImageClass, settings, content, desiredHeight } from './init';
+import { notify, hideAllNotifications } from './helpers';
+
+const RENDER_DELAY = 100;
+const FADE_IN_DELAY = 400;
+const NO_IMAGES_FOUND_WAIT_DELAY = 4000;
+
+let renderTimer;
+let images = [];                    // Images suitable for gallery
+let allImageSrcList = [];           // List of all image sources to prevent duplicates
+
 /**
  * Process an image to find if it's suitable for showing in the gallery
  */
@@ -6,14 +17,14 @@ function processSingleImage() {
     if(!this.src) {
         if(this.getAttribute('data-src')) {
             // Tell XenForo lazyload plugin to fuck off
-            var clone = this.cloneNode();
+            const clone = this.cloneNode();
             clone.src = this.getAttribute('data-src');
             this.parentNode.replaceChild(clone, this);
             clone.addEventListener('load', processSingleImage, false);
         }
         return; //No source available or element replaced
     }
-    if(allImageSrcList.indexOf(this.src) === -1) {
+    if(!allImageSrcList.contains(this.src)) {
         allImageSrcList.push(this.src);
     } else {
         //Duplicate
@@ -43,8 +54,8 @@ function processSingleImage() {
  * @return {boolean}
  */
 function processImages() {
-    for(var idx = 0, len = document.images.length; idx < len; idx++) {
-        var img = document.images[idx];
+    for(let i = 0, len = document.images.length; i < len; i++) {
+        const img = document.images[i];
         if(img.complete) {
             processSingleImage.call(img);
         } else if(!img._hasGalleryzerLoader) {
@@ -52,7 +63,7 @@ function processImages() {
         }
     }
 
-    var timer = setTimeout(function() {
+    let timer = setTimeout(function() {
         if(!images.length) {
             notify('No suitable images found.');
         }
@@ -80,16 +91,16 @@ function imageSorter(a, b) {
  * @return {HTMLElement}    Gallery image element
  */
 function createGalleryImageElement(img) {
-    var el = document.createElement('div');
+    const el = document.createElement('div');
     el.className = galleryImageClass;
 
-    var bigVersion = (img.parentNode.tagName === 'A') ? img.parentNode.href : false;
+    const bigVersion = (img.parentNode.tagName === 'A') ? img.parentNode.href : false;
     
     if(bigVersion) {
         el.setAttribute('data-bigImage', bigVersion);
     }
 
-    var imgEl = img.cloneNode();
+    const imgEl = img.cloneNode();
     imgEl.removeAttribute('style');
     imgEl.removeAttribute('onload');
     imgEl.removeAttribute('width');
@@ -105,15 +116,15 @@ function createGalleryImageElement(img) {
     el._galleryzedOriginalImgNode = img;
 
     imgEl.style.opacity = 0;
-    var start = null;
+    let start;
 
     function fadeIn(timestamp) {
         if(!start) {
             start = timestamp;
         }
-        var diff = timestamp - start;
+        const diff = timestamp - start;
         if(diff < FADE_IN_DELAY) {
-            window.requestAnimationFrame(fadeIn)
+            window.requestAnimationFrame(fadeIn);
         } else {
             imgEl.style.opacity = 1;
         }
@@ -129,8 +140,8 @@ function createGalleryImageElement(img) {
  * @param {Number} idx      Index in images list
  */
 function addImageToGallery(img, idx) {
-    var imageEl = createGalleryImageElement(img, idx);
-    var previousEl = idx === 0 ? content.firstChild : images[idx - 1]._galleryzedEl;
+    const imageEl = createGalleryImageElement(img, idx);
+    const previousEl = idx === 0 ? content.firstChild : images[idx - 1]._galleryzedEl;
     content.insertBefore(imageEl, previousEl && previousEl.nextSibling ? previousEl.nextSibling : null);
 }
 
@@ -147,3 +158,7 @@ function renderImages() {
         }
     }
 }
+
+export {
+    processImages
+};

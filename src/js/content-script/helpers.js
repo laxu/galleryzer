@@ -1,10 +1,31 @@
+import { PREFIX, notifications } from './init';
+
+const NOTIFICATION_CLOSE_DELAY = 3000;
+const NOTIFICATION_FADE_DELAY = 1000;
+
+let settings;
+
+/**
+ * Get settings of extension
+ * @param {Function} callback Execute callback when settings have been set
+ */
+function getSettings(callback) {
+    // eslint-disable-next-line no-undef
+    chrome.extension.sendRequest({ getSettings: true }, function(response) {
+        if(response.settings) {
+            settings = response.settings;
+            callback(response.settings);
+        }
+    });
+}
+
 /**
  * Set element CSS
  * @param {HTMLElement} el  Element whose CSS you want to set
  * @param {Object} obj     Key:value pairs of CSS properties
  */
 function setCss(el, obj) {
-    for(var prop in obj) {
+    for(let prop in obj) {
         el.style[prop] = obj[prop];
     }
 }
@@ -30,7 +51,7 @@ function hideEl(el) {
  * @param  {string} message Message to show
  */
 function notify(message) {
-    el = document.createElement('div');
+    const el = document.createElement('div');
     el.className = PREFIX + 'notification';
     el.innerHTML = message;
     notifications.appendChild(el);
@@ -73,11 +94,11 @@ function hideNotification(el, instantly) {
     }
 }
 
-module.exports = {
-	setCSS: setCSS,
-	showEl: showEl,
-	hideEl: hideEl,
-	notify: notify,
-	hideNotification: hideNotification,
-	hideAllNotifications: hideAllNotifications
+export default {
+    setCss,
+    showEl,
+    hideEl,
+    notify,
+    hideNotification,
+    hideAllNotifications
 };
