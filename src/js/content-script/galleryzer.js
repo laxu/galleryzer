@@ -104,8 +104,12 @@ function changePreviewText(img) {
             textContentNode, 
             NodeFilter.SHOW_TEXT, 
             { 
-                acceptNode: function(node) { 
-                    return node.data.trim().length ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP;
+                acceptNode: function(node) {
+                    const nodeData = node.data.trim();
+                    if (nodeData.length && nodeData.indexOf('This image has been resized.') === -1) {
+                        return NodeFilter.FILTER_ACCEPT;
+                    }
+                    return NodeFilter.FILTER_SKIP;
                 }
             }
         );
