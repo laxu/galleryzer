@@ -86,13 +86,3 @@ function hideNotification(el, instantly) {
         }, NOTIFICATION_CLOSE_DELAY);
     }
 }
-
-const helpers = {
-    getSettings,
-    setCss,
-    showEl,
-    hideEl,
-    notify,
-    hideNotification,
-    hideAllNotifications
-};

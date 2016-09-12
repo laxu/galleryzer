@@ -1,18 +1,16 @@
 // Auto 
 if(window.location.href.indexOf(AUTO_OPEN_PARAM) !== -1) {
     document.addEventListener('DOMContentLoaded', function() {
-        helpers.getSettings(initGallery);
+        getSettings(initGallery);
     });
 }
 
 /**
  * Initialize gallery
  */
-function initGallery(responseSettings) {
-    settings = responseSettings;
+function initGallery() {
     desiredHeight = settings.minWidth / imgHeightRatio;
     buildGallery();
-    helpers.notify('Finding suitable images...');
     processImages();
     showGallery();
 }
@@ -21,8 +19,8 @@ function initGallery(responseSettings) {
  * Show big image preview
  */
 function showPreview() {
-    helpers.showEl(bg);
-    helpers.showEl(preview);
+    showEl(bg);
+    showEl(preview);
     previewOpen = true;
 }
 
@@ -30,9 +28,9 @@ function showPreview() {
  * Hide big image
  */
 function hidePreview() {
-    helpers.hideEl(preview);
-    helpers.hideEl(bg);
-    helpers.hideEl(previewTextContext);
+    hideEl(preview);
+    hideEl(bg);
+    hideEl(previewTextContext);
     previewOpen = false;
 }
 
@@ -40,7 +38,7 @@ function hidePreview() {
  * Show gallery
  */
 function showGallery() {
-    helpers.showEl(frame);
+    showEl(frame);
     
     //Save some page settings for later
     prevBodyPosition = document.body.style.position;
@@ -58,7 +56,7 @@ function showGallery() {
  */
 function hideGallery() {
     hidePreview();
-    helpers.hideEl(frame);
+    hideEl(frame);
     document.body.style.position = prevBodyPosition;
     document.body.style.overflow = prevBodyOverflow;
     window.scrollTo(prevScroll.x, prevScroll.y);
@@ -184,9 +182,9 @@ function bindEventListeners() {
             previewImg._galleryzed = true;
 
             preview.className = '';
-            helpers.hideEl(previewSpinner);
-            helpers.showEl(previewImg);
-            helpers.showEl(previewTextContext);
+            hideEl(previewSpinner);
+            showEl(previewImg);
+            showEl(previewTextContext);
         }
     }, false);
 
@@ -195,9 +193,9 @@ function bindEventListeners() {
         if(previewImg.getAttribute('src') !== altImgURL) {
             previewImg.setAttribute('src', altImgURL);
             
-            helpers.hideEl(previewSpinner);
-            helpers.showEl(previewImg);
-            helpers.showEl(previewTextContext);
+            hideEl(previewSpinner);
+            showEl(previewImg);
+            showEl(previewTextContext);
         }
     }, false);    
 
@@ -224,8 +222,8 @@ function bindEventListeners() {
 
             if(imgURL !== previewImg.getAttribute('src')) {
                 preview.className = 'loading';
-                helpers.hideEl(previewImg);
-                helpers.showEl(previewSpinner);
+                hideEl(previewImg);
+                showEl(previewSpinner);
                 previewImg.setAttribute('src', imgURL);
                 previewImg._galleryzerImageEl = target;
                 changePreviewText(target._galleryzedOriginalImgNode);
