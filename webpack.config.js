@@ -6,11 +6,10 @@ var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   entry: {
-    galleryzer: path.join(__dirname, 'src/js/content-script/galleryzer.js'),
-    galleryzerCss: path.join(__dirname, 'src/sass/galleryzer.scss')
+    galleryzer: path.resolve(__dirname, 'src/js/content-script/galleryzer.js')
   },
   output: {
-    path: path.join(__dirname, 'dist'),
+    path: path.resolve(__dirname, 'dist'),
     filename: '[name].js'
   },
   module: {
@@ -23,30 +22,25 @@ module.exports = {
           presets: ['es2015']
         }
       },
-      {
-        test: /\.scss$/,
-        loaders: ['css', 'sass']
-      },
       { 
-        test: /\.css$/, 
-        loader: ExtractTextPlugin.extract({
-          fallbackLoader: 'style-loader',
-          loader: 'css-loader'
-        })
+        test: /\.scss$/,
+        loader: ExtractTextPlugin.extract('css', ['css', 'sass'])
       },
       { 
         test: /\.html$/, 
         loader: 'html-loader'
       },
     ]
-  },  
+  },
   plugins: [
-    new ExtractTextPlugin('galleryzer.css'),
+    new ExtractTextPlugin('galleryzer.css', { allChunks: true }),
     new CopyWebpackPlugin([
+      { from: './src/manifest.json', flatten: true },
       { from: './src/js/main.js', flatten: true },
       { from: './src/js/background.js', flatten: true },
       { from: './src/js/options.js', flatten: true },
-      { from: './src/html/*.html', flatten: true }
+      { from: './src/html/*.html', flatten: true },
+      { from: './src/images/*', to:'images', flatten: true }
     ])
   ]
 }
