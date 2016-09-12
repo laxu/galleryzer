@@ -19,6 +19,7 @@ To get it running:
 ```
 
 To build: `npm run build`
+
 To build production version: `npm run build:prod`
 
 Copyright Mikko Lakomaa. [Creative Commons Attribution + Non-Commercial license.](http://creativecommons.org/licenses/by-nc/4.0/)
