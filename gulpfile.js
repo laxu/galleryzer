@@ -87,7 +87,7 @@ gulp.task('optimize:css', ['sass'], function(callback) {
   pump(
     [
       gulp.src(path.join(paths.dist, '*.css')),
-      cssnano(),
+      cssnano({ safe: true }),
       gulp.dest(paths.dist)
     ], callback
   );
