@@ -30,7 +30,6 @@ function showPreview() {
 function hidePreview() {
     hideEl(preview);
     hideEl(bg);
-    hideEl(previewTextContext);
     previewOpen = false;
 }
 
@@ -125,8 +124,11 @@ function changePreviewText(img) {
     }
 
     if(textContent.hasChildNodes()) {
-        previewTextContext.appendChild(textContent.cloneNode(true));   
-    }  
+        previewTextContext.appendChild(textContent.cloneNode(true));
+        showEl(previewTextContext);
+    } else {
+        hideEl(previewTextContext);
+    }
 }
 
 /**
@@ -188,7 +190,6 @@ function bindEventListeners() {
             preview.className = '';
             hideEl(previewSpinner);
             showEl(previewImg);
-            showEl(previewTextContext);
         }
     }, false);
 
@@ -199,7 +200,6 @@ function bindEventListeners() {
             
             hideEl(previewSpinner);
             showEl(previewImg);
-            showEl(previewTextContext);
         }
     }, false);    
 
