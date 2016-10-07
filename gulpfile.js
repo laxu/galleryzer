@@ -25,7 +25,7 @@ var paths = {
     path.resolve(rootPath, 'js/content-script/process.js'),
     path.resolve(rootPath, 'js/content-script/forumNav.js')
   ],
-  sass: path.resolve(rootPath, 'sass/*.scss'),
+  sass: path.resolve(rootPath, 'sass/**/*.scss'),
   html: path.resolve(rootPath, 'html/*.html'),
   images: path.resolve(rootPath, 'images/*.png'),
   manifest: path.resolve(rootPath, 'manifest.json')
