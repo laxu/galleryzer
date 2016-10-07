@@ -2,7 +2,7 @@
 
 const PREFIX = 'galleryzer_';      //Prefix to avoid clashing classes etc
 const galleryImageClass = PREFIX + 'gallery_image';
-const frameID = PREFIX + 'gallery_frame';
+const frameID = PREFIX + 'frame';
 
 const AUTO_OPEN_PARAM = 'galleryzerAutoOpen=1';
 

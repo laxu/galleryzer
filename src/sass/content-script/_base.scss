@@ -1,6 +1,6 @@
 #galleryzer {
 
-  &_gallery_frame {
+  &_frame {
     display: none;
     position: fixed;
     z-index: 99990;
@@ -31,7 +31,7 @@
     }
   }
 
-  &_gallery_background {
+  &_background {
     display:none;
     z-index: 99998;
     position: fixed;
@@ -44,7 +44,7 @@
     background: rgba(0, 0, 0, .75);
   }
 
-    &_gallery_container {
+    &_container {
       position: relative;
       box-sizing: border-box;
       width: calc(100% - 40px);
@@ -64,7 +64,7 @@
       }
     }
 
-    &_gallery_wrapper {
+    &_wrapper {
       overflow: auto;
       width: 100%;
       height: 100%;
@@ -72,7 +72,7 @@
       box-sizing: border-box;
     }
 
-    &_gallery_content {
+    &_content {
       -webkit-column-count: 2;
       -webkit-column-gap: 5px;
       column-count: 2;
@@ -92,7 +92,7 @@
     }
   }
 
-  .galleryzer{
+  .galleryzer {
     &_notification {
       z-index: 999999;
       margin: 1rem auto;

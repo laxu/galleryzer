@@ -1,5 +1,5 @@
 #galleryzer {
-  &_gallery_preview {
+  &_preview {
     display:none;
     position: absolute;
     z-index: 99999;
@@ -31,7 +31,7 @@
       }
     }
 
-    #galleryzer_preview_spinner {
+    &_spinner {
       position: relative;
       top: 109px;
       left: 109px;

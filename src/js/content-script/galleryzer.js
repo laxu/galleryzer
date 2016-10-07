@@ -261,10 +261,20 @@ function buildFrame() {
     let el = document.createElement('div');
     el.setAttribute('id', frameID);
     el.className = settings.background;
-    el.innerHTML = '<div id="' + PREFIX + 'gallery_background"></div>' +
-    '<div id="' + PREFIX + 'gallery_preview"><div class="' + PREFIX + 'loader"></div><img id="' + PREFIX + 'preview_image"><div id="' + PREFIX + 'preview_text"></div></div>' +
-    '<div id="' + PREFIX + 'gallery_container"><div id="' + PREFIX + 'close_button">X</div><div id="' + PREFIX + 'notification_container"></div><div id="' + PREFIX + 'gallery_wrapper">' + 
-    '<div id="' + PREFIX + 'gallery_content"></div></div></div>';
+    el.innerHTML = `
+        <div id="${PREFIX}background"></div>
+        <div id="${PREFIX}preview">
+            <div class="${PREFIX}loader"></div>
+            <img id="${PREFIX}preview_image">
+            <div id="${PREFIX}preview_text"></div>
+        </div>
+        <div id="${PREFIX}container">
+            <div id="${PREFIX}close_button">X</div>
+            <div id="${PREFIX}notification_container"></div>
+            <div id="${PREFIX}wrapper">
+                <div id="${PREFIX}content"></div>
+            </div>
+        </div>`;
     return el;
 }
 
@@ -280,13 +290,13 @@ function buildGallery() {
 
     document.body.appendChild(frame);
 
-    container = frame.querySelector('#' + PREFIX + 'gallery_container');
-    content = container.querySelector('#' + PREFIX + 'gallery_content');
-    preview = frame.querySelector('#' + PREFIX + 'gallery_preview');
+    container = frame.querySelector('#' + PREFIX + 'container');
+    content = container.querySelector('#' + PREFIX + 'content');
+    preview = frame.querySelector('#' + PREFIX + 'preview');
     previewImg = preview.querySelector('#' + PREFIX + 'preview_image');
     previewTextContext = preview.querySelector('#' + PREFIX + 'preview_text');
     previewSpinner = preview.querySelector('.' + PREFIX + 'loader');
-    bg = frame.querySelector('#' + PREFIX + 'gallery_background');
+    bg = frame.querySelector('#' + PREFIX + 'background');
     closeButton = container.querySelector('#' + PREFIX + 'close_button');
     notifications = container.querySelector('#' + PREFIX + 'notification_container');
 

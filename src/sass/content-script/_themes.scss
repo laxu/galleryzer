@@ -1,14 +1,14 @@
 #galleryzer {
-	&_gallery_frame {
+	&_frame {
 		/* Light theme */
     &.light {
-      #galleryzer_gallery_preview, 
-      #galleryzer_gallery_container, 
+      #galleryzer_preview, 
+      #galleryzer_container, 
       .galleryzer_loader:after {
         background: #ddd;
       }
 
-      #galleryzer_gallery_container {
+      #galleryzer_container {
         color: #222;
       }
 
@@ -32,7 +32,7 @@
         }
       }
 
-      #galleryzer_gallery_preview img {
+      #galleryzer_preview img {
         background-color: #999;
       }
     }
