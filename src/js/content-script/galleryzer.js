@@ -174,7 +174,7 @@ function bindEventListeners() {
     }, false);
     
     //Close big image by clicking preview image
-    previewImg.addEventListener('click', function(event) {
+    preview.addEventListener('click', function(event) {
         event.stopPropagation();
         hidePreview();
     }, false);
