@@ -41,6 +41,9 @@
       position: absolute;
       bottom: 20px;
       width: calc(100% - 40px);
+      max-height: 30%;
+      overflow-x: hidden;
+      overflow-y: scroll;
       padding: 1rem;
       box-sizing: border-box;
       opacity: 0;
