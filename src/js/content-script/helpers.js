@@ -13,17 +13,6 @@ function getSettings(callback) {
 }
 
 /**
- * Set element CSS
- * @param {HTMLElement} el  Element whose CSS you want to set
- * @param {Object} obj     Key:value pairs of CSS properties
- */
-function setCss(el, obj) {
-    for(let prop in obj) {
-        el.style[prop] = obj[prop];
-    }
-}
-
-/**
  * Show element
  * @param  {HTMLElement} el Element to show
  */
