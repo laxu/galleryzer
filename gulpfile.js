@@ -1,17 +1,18 @@
 'use strict';
 
-var gulp = require('gulp');
-var babel = require('gulp-babel');
-var concat = require('gulp-concat');
-var sass = require('gulp-sass');
-var uglify = require('gulp-uglify');
-var cssnano = require('gulp-cssnano');
-var path = require('path');
-var pump = require('pump');
+const gulp = require('gulp');
+const babel = require('gulp-babel');
+const concat = require('gulp-concat');
+const sass = require('gulp-sass');
+const uglify = require('gulp-uglify');
+const cssnano = require('gulp-cssnano');
+const path = require('path');
+const pump = require('pump');
+const eslint = require('gulp-eslint');
 
-var rootPath = path.resolve(__dirname) + '/src/';
+const rootPath = path.resolve(__dirname) + '/src/';
 
-var paths = {
+const paths = {
   dist: path.resolve(__dirname, 'dist/'),
   miscJs: [
     path.resolve(rootPath, 'js/main.js'),
@@ -36,6 +37,9 @@ gulp.task('js', function(callback) {
     [
       gulp.src(paths.contentScript),
       concat('galleryzer.js'),
+      eslint(),
+      eslint.format(),
+      eslint.failAfterError(),
       babel({
         compact: false,
         presets: ['es2015']
