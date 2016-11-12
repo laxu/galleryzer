@@ -12,7 +12,9 @@
 
 .galleryzer {
   &_forum_real_nav {
+    revert: all;
     margin: 0;
+    color: #eee;
 
     .pageNavHeader {
       margin-bottom: 0;

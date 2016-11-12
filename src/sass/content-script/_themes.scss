@@ -35,6 +35,19 @@
       #galleryzer_preview img {
         background-color: #999;
       }
+
+      .galleryzer {
+        &_forum_real_nav {
+          color: #222;
+
+          * {
+            revert: all;
+            color: #222;
+          }
+        }
+      }
     }
   }
+
+
 }

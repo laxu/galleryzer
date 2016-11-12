@@ -48,10 +48,15 @@
       box-sizing: border-box;
       opacity: 0;
       background: #444;
-      color: white;
+      color: #fff;
       text-align: left;
       line-height: 1.15rem;
       transition: opacity 0.5s;
+
+      * {
+        revert: all;
+        color: #fff;
+      }
     }
 
     &:hover #galleryzer_preview_text {
