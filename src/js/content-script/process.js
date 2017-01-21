@@ -23,6 +23,9 @@ function processSingleImage() {
         if(this._galleryzed || this._galleryzerRejected) {
             return;
         }
+        if (this.src.includes('photobucket.com') && this.width === 240 && this.height === 240) {
+            return; // Missing Photobucket image
+        }
         if(this.width >= settings.minWidth && this.height >= desiredHeight) {
             images.push(this);
             
