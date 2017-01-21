@@ -236,21 +236,6 @@ function bindEventListeners() {
             showPreview();
         }
     }, false);
-
-    if(settings.findForumNav && forumNav) { 
-        //Add auto open gallery parameter when clicking forum nav link
-        forumNav.addEventListener('click', function(event) {
-            if(event.target.tagName === 'A') {
-                event.preventDefault();
-                event.stopPropagation();
-                let link = event.target.getAttribute('href');
-                if(link) {
-                    const paramSign = link.split('?').length > 1 ? '&' : '?';
-                    window.location.href = link + paramSign + AUTO_OPEN_PARAM;
-                }
-            }
-        });
-    }
 }
 
 /**

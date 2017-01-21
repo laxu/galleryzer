@@ -13,7 +13,9 @@ const RENDER_DELAY = 100;
 const FADE_IN_DELAY = 400;
 const NO_IMAGES_FOUND_WAIT_DELAY = 4000;
 
-const FORUM_NAV_ELEMENTS = '.pagenav, .PageNav, .pagelinks, .paging, .pagination';
+const FORUM_NAV_ELEMENTS = '.pagenav, .PageNav, .pagelinks, .paging, .pagination, .gensmall';
+const FORUM_NAV_LINK_ELEMENTS = 'a, td > span > strong, li > span';
+const FORUM_CURRENT_PAGE_CLASSES = ['currentPage', 'alt2', 'active'];
 
 //Keyboard keycodes used
 const KEY_ESC         = 27;
