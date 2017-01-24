@@ -96,6 +96,7 @@ function createGalleryImageElement(img) {
     }
 
     const imgEl = img.cloneNode();
+    imgEl.className = '';
     imgEl.removeAttribute('style');
     imgEl.removeAttribute('onload');
     imgEl.removeAttribute('width');
