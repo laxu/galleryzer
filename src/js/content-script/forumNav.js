@@ -36,6 +36,7 @@ function buildForumNav(container, forumNav) {
         forumNavList.appendChild(listEl);
     }
 
+    container.className = PREFIX + 'has_forum_nav';
     const firstChild = container.firstChild;
     if (firstChild) {
         container.insertBefore(forumNavWrapper, firstChild);
