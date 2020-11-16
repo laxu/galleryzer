@@ -1,9 +1,9 @@
 {
     "name": "Galleryzer",
-    "version": "2.1.0",
+    "version": "2.2.0",
     "manifest_version": 2,
     "description": "Creates a gallery view of images on page.",
-    "permissions": ["tabs", "storage", "http://*/*", "https://*/*"],
+    "permissions": ["tabs", "storage", "<all_urls>"],
     "browser_action": {
         "default_icon": "images/icon-32.png",
         "default_title": "Galleryzer"
@@ -19,8 +19,8 @@
         {
             "js": [ "galleryzer.js" ],
             "css": [ "galleryzer.css" ],
-            "matches": ["http://*/*", "https://*/*"],
-            "run_at": "document_start"
+            "matches": ["<all_urls>"],
+            "run_at": "document_idle"
         }
     ],
     "web_accessible_resources": [ "gallery.css"],
