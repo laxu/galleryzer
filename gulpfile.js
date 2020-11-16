@@ -1,14 +1,16 @@
 'use strict';
 
-const gulp = require('gulp');
+const { series, parallel, watch, src, dest } = require('gulp');
 const babel = require('gulp-babel');
 const concat = require('gulp-concat');
-const sass = require('gulp-sass');
+const sass = require('@selfisekai/gulp-sass');
 const uglify = require('gulp-uglify');
 const cssnano = require('gulp-cssnano');
 const path = require('path');
 const pump = require('pump');
 const eslint = require('gulp-eslint');
+const cleanDir = require('gulp-clean-dir');
+sass.compiler = require('sass');
 
 const rootPath = path.resolve(__dirname) + '/src/';
 
@@ -32,97 +34,111 @@ const paths = {
   manifest: path.resolve(rootPath, 'manifest.json')
 };
 
-gulp.task('js', function(callback) {
+function cleanDist(callback) {
+  cleanDir(paths.dist);
+  callback();
+}
+
+function compileJS(callback) {
   pump(
     [
-      gulp.src(paths.contentScript),
+      src(paths.contentScript),
       concat('galleryzer.js'),
       eslint(),
       eslint.format(),
       eslint.failAfterError(),
       babel({
         compact: false,
-        presets: ['es2015']
+        presets: ['@babel/preset-env']
       }),
-      gulp.dest(paths.dist)
+      dest(paths.dist)
     ],
     callback
   );
-});
+}
 
-gulp.task('js:misc', function(callback) {
+function copyMiscJS(callback) {
   pump(
     [
-      gulp.src(paths.miscJs),
-      gulp.dest(paths.dist)
+      src(paths.miscJs),
+      dest(paths.dist)
     ],
     callback
   );
-});
+}
 
-gulp.task('js:watch', function() {
-  gulp.watch(paths.contentScript, ['js']);
-  gulp.watch(paths.miscJs, ['js:misc']);
-});
-
-gulp.task('js:uglify', ['js', 'js:misc'], function(callback) {
+const minifyJS = series(compileJS, copyMiscJS, function uglifyJS(callback) {
   pump(
     [
-      gulp.src(path.join(paths.dist, '**/*.js')),
+      src(path.join(paths.dist, '**/*.js')),
       uglify(),
-      gulp.dest(paths.dist)
+      dest(paths.dist)
     ],
     callback
   );
 });
 
-gulp.task('sass', function(callback) {
+function compileSASS(callback) {
   pump(
     [
-      gulp.src(paths.sass),
+      src(paths.sass),
       sass(),
-      gulp.dest(paths.dist)
+      dest(paths.dist)
     ], 
     callback
   );
-});
+}
 
-gulp.task('optimize:css', ['sass'], function(callback) {
+const optimizeStyles = series(compileSASS, function optimizeCSS(callback) {
   pump(
     [
-      gulp.src(path.join(paths.dist, '*.css')),
+      src(path.join(paths.dist, '*.css')),
       cssnano({ safe: true }),
-      gulp.dest(paths.dist)
+      dest(paths.dist)
     ], callback
   );
 });
 
-gulp.task('sass:watch', function() {
-  gulp.watch(paths.sass, ['sass']);
-});
-
-gulp.task('copy:images', function(callback) {
+function copyImages(callback) {
   pump(
     [
-      gulp.src(paths.images),
-      gulp.dest(path.join(paths.dist, 'images'))
+      src(paths.images),
+      dest(path.join(paths.dist, 'images'))
     ],
     callback
   );
-});
+}
 
-gulp.task('copy:misc', function(callback) {
+function copyMisc(callback) {
   pump(
     [
-      gulp.src([paths.html, paths.manifest]),
-      gulp.dest(paths.dist)
+      src([paths.html, paths.manifest]),
+      dest(paths.dist)
     ],
     callback
   );
+}
+
+function watchJS() {
+  watch(paths.contentScript, compileJS);
+  watch(paths.miscJs, copyMiscJS);
+}
+
+function watchSASS() {
+  watch(paths.sass, compileSASS);
+};
+
+const buildDev = series(cleanDist, parallel(compileJS, copyMiscJS, compileSASS, copyMisc, copyImages));
+
+exports.buildDev = buildDev;
+
+exports.buildProd = series(
+  cleanDist,
+  parallel(compileJS, copyMiscJS, compileSASS, copyMisc, copyImages),
+  parallel(minifyJS, optimizeStyles)
+);
+
+exports.default = series(buildDev, function startWatchers() {
+  watchJS();
+  watchSASS();
 });
-
-gulp.task('dev', ['build:dev', 'js:watch', 'sass:watch']);
-gulp.task('build:dev', ['js', 'js:misc', 'sass', 'copy:misc', 'copy:images']);
-gulp.task('build:prod', ['js', 'js:misc', 'sass', 'copy:misc', 'copy:images', 'js:uglify', 'optimize:css']);
-
-gulp.task('default', ['dev']);
