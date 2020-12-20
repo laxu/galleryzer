@@ -1,6 +1,6 @@
 {
   "name": "galleryzer",
-  "version": "2.1.1",
+  "version": "2.3.0",
   "description": "Creates a gallery from suitable images on a website",
   "devDependencies": {
     "@selfisekai/gulp-sass": "^4.2.0",
