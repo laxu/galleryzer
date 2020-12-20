@@ -2,24 +2,11 @@
     "env": {
         "browser": true,
         "commonjs": false,
-        "es6": true
+        "es2020": true
     },
-    "extends": "eslint:recommended",
+    "extends": ["eslint:recommended", "prettier"],
     "parserOptions": {
         "sourceType": "module"
     },
-    "rules": {
-        "indent": [
-            "error",
-            4
-        ],
-        "quotes": [
-            "error",
-            "single"
-        ],
-        "semi": [
-            "error",
-            "always"
-        ]
-    }
+    "rules": {}
 }
